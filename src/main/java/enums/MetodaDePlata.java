@@ -1,4 +1,4 @@
-package model.enums;
+package enums;
 
 public enum MetodaDePlata {
     CASH, CARD, TRANSFER_BANCAR;

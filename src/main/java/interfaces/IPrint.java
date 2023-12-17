@@ -1,6 +1,6 @@
-package main.interfaces;
+package interfaces;
 
-import main.abstractClasses.AModel;
+import abstractClasses.AModel;
 
 public interface IPrint {
     default void print(AModel model) {

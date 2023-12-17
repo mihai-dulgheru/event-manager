@@ -1,7 +1,8 @@
-package model;
+package mvc.model;
 
-import main.abstractClasses.ACRUDOperations;
-import main.abstractClasses.AModel;
+import abstractClasses.ACRUDOperations;
+import abstractClasses.AModel;
+import database.Database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +25,9 @@ public class Client extends AModel {
                     "    cnp            VARCHAR(255) NOT NULL," +
                     "    adresa         VARCHAR(255) NOT NULL," +
                     "    email          VARCHAR(255) NOT NULL," +
-                    "    telefon        VARCHAR(255) NOT NULL" +
+                    "    telefon        VARCHAR(255) NOT NULL," +
+                    "    username       VARCHAR(255) NOT NULL," +
+                    "    parola         VARCHAR(255) NOT NULL" +
                     ")");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -38,8 +41,10 @@ public class Client extends AModel {
     private String adresa;
     private String email;
     private String telefon;
+    private String username;
+    private String parola;
 
-    public Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon) {
+    public Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
         this.id = UUID.randomUUID();
         this.numeClient = numeClient;
         this.prenumeClient = prenumeClient;
@@ -47,9 +52,11 @@ public class Client extends AModel {
         this.adresa = adresa;
         this.email = email;
         this.telefon = telefon;
+        this.username = username;
+        this.parola = parola;
     }
 
-    private Client(UUID id, String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon) {
+    private Client(UUID id, String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
         this.id = id;
         this.numeClient = numeClient;
         this.prenumeClient = prenumeClient;
@@ -57,6 +64,8 @@ public class Client extends AModel {
         this.adresa = adresa;
         this.email = email;
         this.telefon = telefon;
+        this.username = username;
+        this.parola = parola;
     }
 
     public static ACRUDOperations readOne(UUID id) throws SQLException {
@@ -88,13 +97,29 @@ public class Client extends AModel {
         String adresa = resultSet.getString(5);
         String email = resultSet.getString(6);
         String telefon = resultSet.getString(7);
+        String username = resultSet.getString(8);
+        String parola = resultSet.getString(9);
 
-        return new Client(id, numeClient, prenumeClient, cnp, adresa, email, telefon);
+        return new Client(id, numeClient, prenumeClient, cnp, adresa, email, telefon, username, parola);
+    }
+
+    public static Client findByUsername(String username) {
+        try {
+            String selectString = "SELECT * FROM clienti WHERE username = ?";
+            PreparedStatement selectClient = Database.connection.prepareStatement(selectString);
+
+            selectClient.setString(1, username);
+
+            ResultSet rs = selectClient.executeQuery();
+            return (Client) load(rs);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void insert() throws SQLException {
-        String insertString = "INSERT INTO clienti VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String insertString = "INSERT INTO clienti VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement insertClient = Database.connection.prepareStatement(insertString);
 
         insertClient.setString(1, this.id.toString());
@@ -104,6 +129,8 @@ public class Client extends AModel {
         insertClient.setString(5, this.adresa);
         insertClient.setString(6, this.email);
         insertClient.setString(7, this.telefon);
+        insertClient.setString(8, this.username);
+        insertClient.setString(9, this.parola);
 
         insertClient.executeUpdate();
         System.out.println("1 row(s) affected");
@@ -111,7 +138,7 @@ public class Client extends AModel {
 
     @Override
     public void update() throws SQLException {
-        String updateString = "UPDATE clienti SET nume_client = ?, prenume_client = ?, cnp = ?, adresa = ?, email = ?, telefon = ? WHERE id_client = ?";
+        String updateString = "UPDATE clienti SET nume_client = ?, prenume_client = ?, cnp = ?, adresa = ?, email = ?, telefon = ?, username = ?, parola = ? WHERE id_client = ?";
         PreparedStatement updateClient = Database.connection.prepareStatement(updateString);
 
         updateClient.setString(1, this.numeClient);
@@ -120,7 +147,9 @@ public class Client extends AModel {
         updateClient.setString(4, this.adresa);
         updateClient.setString(5, this.email);
         updateClient.setString(6, this.telefon);
-        updateClient.setString(7, this.id.toString());
+        updateClient.setString(7, this.username);
+        updateClient.setString(8, this.parola);
+        updateClient.setString(9, this.id.toString());
 
         updateClient.executeUpdate();
         System.out.println("1 row(s) affected");
@@ -189,6 +218,22 @@ public class Client extends AModel {
         this.telefon = telefon;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getParola() {
+        return parola;
+    }
+
+    public void setParola(String parola) {
+        this.parola = parola;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -199,6 +244,8 @@ public class Client extends AModel {
                 ", adresa='" + adresa + '\'' +
                 ", email='" + email + '\'' +
                 ", telefon='" + telefon + '\'' +
+                ", username='" + username + '\'' +
+                ", parola='" + parola + '\'' +
                 '}';
     }
 }

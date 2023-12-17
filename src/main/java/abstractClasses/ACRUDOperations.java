@@ -1,4 +1,4 @@
-package main.abstractClasses;
+package abstractClasses;
 
 import jdk.jshell.spi.ExecutionControl;
 

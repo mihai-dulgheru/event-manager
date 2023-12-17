@@ -1,6 +1,6 @@
-package view;
+package mvc.view;
 
-import main.interfaces.IPrint;
+import interfaces.IPrint;
 
 public class ClientView implements IPrint {
 }

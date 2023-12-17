@@ -1,9 +1,10 @@
-package model;
+package mvc.model;
 
-import main.abstractClasses.ACRUDOperations;
-import main.abstractClasses.AModel;
-import model.enums.MetodaDePlata;
-import model.enums.Moneda;
+import abstractClasses.ACRUDOperations;
+import abstractClasses.AModel;
+import database.Database;
+import enums.MetodaDePlata;
+import enums.Moneda;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

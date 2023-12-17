@@ -1,7 +1,8 @@
-package model;
+package mvc.model;
 
-import main.abstractClasses.ACRUDOperations;
-import main.abstractClasses.AModel;
+import abstractClasses.ACRUDOperations;
+import abstractClasses.AModel;
+import database.Database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
