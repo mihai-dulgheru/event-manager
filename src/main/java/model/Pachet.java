@@ -13,7 +13,14 @@ import java.util.UUID;
 public class Pachet extends CRUDOperations {
     static {
         try {
-            Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS pachete" + "(" + "    id_pachet      VARCHAR(36) PRIMARY KEY," + "    id_eveniment   VARCHAR(36)  NOT NULL," + "    nume_pachet    VARCHAR(255) NOT NULL," + "    detalii_pachet VARCHAR(255) NOT NULL," + "    FOREIGN KEY (id_eveniment) REFERENCES evenimente (id_eveniment)" + ")");
+            Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS pachete" +
+                    "(" +
+                    "    id_pachet      VARCHAR(36) PRIMARY KEY," +
+                    "    id_eveniment   VARCHAR(36)  NOT NULL," +
+                    "    nume_pachet    VARCHAR(255) NOT NULL," +
+                    "    detalii_pachet VARCHAR(255) NOT NULL," +
+                    "    FOREIGN KEY (id_eveniment) REFERENCES evenimente (id_eveniment)" +
+                    ")");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -59,7 +66,7 @@ public class Pachet extends CRUDOperations {
         return packages;
     }
 
-    private static CRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static CRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idEveniment = UUID.fromString(resultSet.getString(2));
         String numePachet = resultSet.getString(3);

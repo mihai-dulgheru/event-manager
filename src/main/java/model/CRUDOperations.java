@@ -16,7 +16,7 @@ public abstract class CRUDOperations {
         throw new ExecutionControl.NotImplementedException("Not implemented");
     }
 
-    private static CRUDOperations load(ResultSet resultSet) throws ExecutionControl.NotImplementedException, SQLException {
+    protected static CRUDOperations load(ResultSet resultSet) throws ExecutionControl.NotImplementedException, SQLException {
         throw new ExecutionControl.NotImplementedException("Not implemented");
     }
 
