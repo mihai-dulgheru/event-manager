@@ -26,7 +26,7 @@ public class Pachet extends CRUDOperations {
         }
     }
 
-    private UUID id;
+    private final UUID id;
     private UUID idEveniment;
     private String numePachet;
     private String detaliiPachet;
@@ -116,10 +116,6 @@ public class Pachet extends CRUDOperations {
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public UUID getIdEveniment() {
