@@ -4,6 +4,7 @@ import model.*;
 import model.enums.MetodaDePlata;
 import model.enums.Moneda;
 import model.enums.TipEveniment;
+import view.*;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -87,6 +88,21 @@ public class Main {
             serviciu.update();
             System.out.println(Serviciu.readOne(serviciu.getId()));
             System.out.println(Serviciu.readMany());
+
+            ClientView clientView = new ClientView();
+            clientView.print(client);
+
+            ContractView contractView = new ContractView();
+            contractView.print(contract);
+
+            EvenimentView evenimentView = new EvenimentView();
+            evenimentView.print(eveniment);
+
+            PachetView pachetView = new PachetView();
+            pachetView.print(pachet);
+
+            ServiciuView serviciuView = new ServiciuView();
+            serviciuView.print(serviciu);
 
             Database.disconnect();
         } catch (SQLException e) {

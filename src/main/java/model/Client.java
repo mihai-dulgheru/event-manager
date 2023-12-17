@@ -1,5 +1,8 @@
 package model;
 
+import main.abstractClasses.ACRUDOperations;
+import main.abstractClasses.AModel;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +13,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Client extends CRUDOperations {
+public class Client extends AModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS clienti" +
@@ -56,7 +59,7 @@ public class Client extends CRUDOperations {
         this.telefon = telefon;
     }
 
-    public static CRUDOperations readOne(UUID id) throws SQLException {
+    public static ACRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM clienti WHERE id_client = ?";
         PreparedStatement selectClient = Database.connection.prepareStatement(selectString);
 
@@ -66,10 +69,10 @@ public class Client extends CRUDOperations {
         return load(rs);
     }
 
-    public static List<CRUDOperations> readMany() throws SQLException {
+    public static List<ACRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM clienti");
 
-        List<CRUDOperations> clients = new ArrayList<>();
+        List<ACRUDOperations> clients = new ArrayList<>();
         while (rs.next()) {
             clients.add(load(rs));
         }
@@ -77,7 +80,7 @@ public class Client extends CRUDOperations {
         return clients;
     }
 
-    protected static CRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         String numeClient = resultSet.getString(2);
         String prenumeClient = resultSet.getString(3);

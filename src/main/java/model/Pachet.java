@@ -1,5 +1,8 @@
 package model;
 
+import main.abstractClasses.ACRUDOperations;
+import main.abstractClasses.AModel;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +13,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Pachet extends CRUDOperations {
+public class Pachet extends AModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS pachete" +
@@ -45,7 +48,7 @@ public class Pachet extends CRUDOperations {
         this.detaliiPachet = detaliiPachet;
     }
 
-    public static CRUDOperations readOne(UUID id) throws SQLException {
+    public static ACRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM pachete WHERE id_pachet = ?";
         PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
 
@@ -55,10 +58,10 @@ public class Pachet extends CRUDOperations {
         return load(rs);
     }
 
-    public static List<CRUDOperations> readMany() throws SQLException {
+    public static List<ACRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM pachete");
 
-        List<CRUDOperations> packages = new ArrayList<>();
+        List<ACRUDOperations> packages = new ArrayList<>();
         while (rs.next()) {
             packages.add(load(rs));
         }
@@ -66,7 +69,7 @@ public class Pachet extends CRUDOperations {
         return packages;
     }
 
-    protected static CRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idEveniment = UUID.fromString(resultSet.getString(2));
         String numePachet = resultSet.getString(3);

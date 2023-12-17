@@ -1,5 +1,7 @@
 package model;
 
+import main.abstractClasses.ACRUDOperations;
+import main.abstractClasses.AModel;
 import model.enums.MetodaDePlata;
 import model.enums.Moneda;
 
@@ -13,7 +15,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Contract extends CRUDOperations {
+public class Contract extends AModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS contracte" +
@@ -60,7 +62,7 @@ public class Contract extends CRUDOperations {
         this.metodaDePlata = metodaDePlata;
     }
 
-    public static CRUDOperations readOne(UUID id) throws SQLException {
+    public static ACRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM contracte WHERE id_contract = ?";
         PreparedStatement selectContract = Database.connection.prepareStatement(selectString);
 
@@ -70,10 +72,10 @@ public class Contract extends CRUDOperations {
         return load(rs);
     }
 
-    public static List<CRUDOperations> readMany() throws SQLException {
+    public static List<ACRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM contracte");
 
-        List<CRUDOperations> contracts = new ArrayList<>();
+        List<ACRUDOperations> contracts = new ArrayList<>();
         while (rs.next()) {
             contracts.add(load(rs));
         }
@@ -81,7 +83,7 @@ public class Contract extends CRUDOperations {
         return contracts;
     }
 
-    protected static CRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idClient = UUID.fromString(resultSet.getString(2));
         String dataIncheiere = resultSet.getString(3);

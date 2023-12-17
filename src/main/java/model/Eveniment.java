@@ -1,5 +1,7 @@
 package model;
 
+import main.abstractClasses.ACRUDOperations;
+import main.abstractClasses.AModel;
 import model.enums.TipEveniment;
 
 import java.sql.PreparedStatement;
@@ -12,7 +14,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Eveniment extends CRUDOperations {
+public class Eveniment extends AModel {
 
     static {
         try {
@@ -52,7 +54,7 @@ public class Eveniment extends CRUDOperations {
         this.locatie = locatie;
     }
 
-    public static CRUDOperations readOne(UUID id) throws SQLException {
+    public static ACRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM evenimente WHERE id_eveniment = ?";
         PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
 
@@ -62,10 +64,10 @@ public class Eveniment extends CRUDOperations {
         return load(rs);
     }
 
-    public static List<CRUDOperations> readMany() throws SQLException {
+    public static List<ACRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM evenimente");
 
-        List<CRUDOperations> packages = new ArrayList<>();
+        List<ACRUDOperations> packages = new ArrayList<>();
         while (rs.next()) {
             packages.add(load(rs));
         }
@@ -73,7 +75,7 @@ public class Eveniment extends CRUDOperations {
         return packages;
     }
 
-    protected static CRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID idEveniment = UUID.fromString(resultSet.getString(1));
         UUID idContract = UUID.fromString(resultSet.getString(2));
         TipEveniment tipEveniment = TipEveniment.valueOf(resultSet.getString(3));
