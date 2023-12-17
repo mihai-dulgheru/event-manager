@@ -13,11 +13,7 @@ import java.util.UUID;
 import static java.lang.String.valueOf;
 
 /**
- * idEveniment (cheie primară)
- * tipEveniment
- * dataEveniment
- * locatie
- * idContract
+ * Active Record
  */
 public class Eveniment extends CRUDOperations{
 
