@@ -13,14 +13,7 @@ import java.util.UUID;
 public class Pachet extends CRUDOperations {
     static {
         try {
-            Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS pachete" +
-                    "(" +
-                    "    id_pachet      VARCHAR(36) PRIMARY KEY," +
-                    "    id_eveniment   VARCHAR(36)  NOT NULL," +
-                    "    nume_pachet    VARCHAR(255) NOT NULL," +
-                    "    detalii_pachet VARCHAR(255) NOT NULL," +
-                    "    FOREIGN KEY (id_eveniment) REFERENCES evenimente (id_eveniment)" +
-                    ")");
+            Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS pachete" + "(" + "    id_pachet      VARCHAR(36) PRIMARY KEY," + "    id_eveniment   VARCHAR(36)  NOT NULL," + "    nume_pachet    VARCHAR(255) NOT NULL," + "    detalii_pachet VARCHAR(255) NOT NULL," + "    FOREIGN KEY (id_eveniment) REFERENCES evenimente (id_eveniment)" + ")");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -47,26 +40,26 @@ public class Pachet extends CRUDOperations {
 
     public static CRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM pachete WHERE id_pachet = ?";
-        PreparedStatement selectPachet = Database.connection.prepareStatement(selectString);
+        PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
 
-        selectPachet.setString(1, id.toString());
+        selectPackage.setString(1, id.toString());
 
-        ResultSet rs = selectPachet.executeQuery();
+        ResultSet rs = selectPackage.executeQuery();
         return load(rs);
     }
 
     public static List<CRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM pachete");
 
-        List<CRUDOperations> pachete = new ArrayList<>();
+        List<CRUDOperations> packages = new ArrayList<>();
         while (rs.next()) {
-            pachete.add(load(rs));
+            packages.add(load(rs));
         }
 
-        return pachete;
+        return packages;
     }
 
-    public static CRUDOperations load(ResultSet resultSet) throws SQLException {
+    private static CRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idEveniment = UUID.fromString(resultSet.getString(2));
         String numePachet = resultSet.getString(3);
@@ -78,14 +71,14 @@ public class Pachet extends CRUDOperations {
     @Override
     public void insert() throws SQLException {
         String insertString = "INSERT INTO pachete VALUES (?, ?, ?, ?)";
-        PreparedStatement insertPachet = Database.connection.prepareStatement(insertString);
+        PreparedStatement insertPackage = Database.connection.prepareStatement(insertString);
 
-        insertPachet.setString(1, this.id.toString());
-        insertPachet.setString(2, this.idEveniment.toString());
-        insertPachet.setString(3, this.numePachet);
-        insertPachet.setString(4, this.detaliiPachet);
+        insertPackage.setString(1, this.id.toString());
+        insertPackage.setString(2, this.idEveniment.toString());
+        insertPackage.setString(3, this.numePachet);
+        insertPackage.setString(4, this.detaliiPachet);
 
-        insertPachet.executeUpdate();
+        insertPackage.executeUpdate();
         System.out.println("1 row(s) affected");
     }
 
@@ -105,7 +98,12 @@ public class Pachet extends CRUDOperations {
 
     @Override
     public void delete() throws SQLException {
-        Database.statement.executeUpdate("DELETE FROM pachete WHERE id_pachet = '" + this.id.toString() + "'");
+        String deleteString = "DELETE FROM pachete WHERE id_pachet = ?";
+        PreparedStatement deletePackage = Database.connection.prepareStatement(deleteString);
+
+        deletePackage.setString(1, this.id.toString());
+
+        deletePackage.executeUpdate();
         System.out.println("1 row(s) affected");
     }
 
