@@ -2,6 +2,7 @@ package main;
 
 import model.Database;
 import model.Pachet;
+import model.Serviciu;
 
 import java.sql.SQLException;
 import java.util.UUID;
