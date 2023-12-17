@@ -1,7 +1,11 @@
 package main;
 
+import model.Client;
+import model.Contract;
 import model.Database;
 import model.Pachet;
+import model.enums.MetodaDePlata;
+import model.enums.Moneda;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -11,6 +15,7 @@ public class Main {
         try {
             Database.connect();
 
+            // Test Pachet
             Pachet pachet = new Pachet(UUID.randomUUID(), "Nume Pachet", "Detalii Pachet");
             pachet.insert();
             pachet.setDetaliiPachet("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas metus neque, sodales quis odio a, consectetur dignissim tortor. Vivamus et eros at erat viverra tincidunt ut eu dolor. Nam ultricies convallis nisi nec faucibus.");
@@ -19,12 +24,41 @@ public class Main {
             System.out.println(Pachet.readMany());
             pachet.delete();
 
-            pachet = new Pachet(UUID.randomUUID(), "Nume Pachet", "Detalii Pachet");
             pachet.insert();
             pachet.setDetaliiPachet("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas metus neque, sodales quis odio a, consectetur dignissim tortor. Vivamus et eros at erat viverra tincidunt ut eu dolor. Nam ultricies convallis nisi nec faucibus.");
             pachet.update();
             System.out.println(Pachet.readOne(pachet.getId()));
             System.out.println(Pachet.readMany());
+
+            // Test Client
+            Client client = new Client("Nume Client", "Prenume Client", "CNP Client", "Adresa Client", "Email Client", "Telefon Client");
+            client.insert();
+            client.setNumeClient("Nume Client Modificat");
+            client.update();
+            System.out.println(Client.readOne(client.getId()));
+            System.out.println(Client.readMany());
+            client.delete();
+
+            client.insert();
+            client.setNumeClient("Nume Client Modificat");
+            client.update();
+            System.out.println(Client.readOne(client.getId()));
+            System.out.println(Client.readMany());
+
+            // Test Contract
+            Contract contract = new Contract(client.getId(), "2023-12-17", 10_000d, Moneda.RON, "Observatii", MetodaDePlata.CARD);
+            contract.insert();
+            contract.setCostTotal(9_000d);
+            contract.update();
+            System.out.println(Contract.readOne(contract.getId()));
+            System.out.println(Contract.readMany());
+            contract.delete();
+
+            contract.insert();
+            contract.setCostTotal(9_000d);
+            contract.update();
+            System.out.println(Contract.readOne(contract.getId()));
+            System.out.println(Contract.readMany());
 
             Database.disconnect();
         } catch (SQLException e) {
