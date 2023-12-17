@@ -2,20 +2,18 @@ package model;
 
 import model.enums.TipEveniment;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
-
-import static java.lang.String.valueOf;
 
 /**
  * Active Record
  */
-public class Eveniment extends CRUDOperations{
+public class Eveniment extends CRUDOperations {
 
     static {
         try {
@@ -33,8 +31,8 @@ public class Eveniment extends CRUDOperations{
         }
     }
 
-    private UUID idEveniment;
-    private UUID idContract;
+    private final UUID idEveniment;
+    private final UUID idContract;
     private TipEveniment tipEveniment;
     private Date dataEveniment;
     private String locatie;
@@ -54,6 +52,7 @@ public class Eveniment extends CRUDOperations{
         this.dataEveniment = dataEveniment;
         this.locatie = locatie;
     }
+
     public static CRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM evenimente WHERE id_eveniment = ?";
         PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
@@ -85,6 +84,7 @@ public class Eveniment extends CRUDOperations{
 
         return new Eveniment(idEveniment, idContract, tipEveniment, dataEveniment, locatie);
     }
+
     @Override
     public void insert() throws SQLException {
         String insertString = "INSERT INTO evenimente VALUES (?, ?, ?, ?, ?)";
@@ -131,16 +131,8 @@ public class Eveniment extends CRUDOperations{
         return idEveniment;
     }
 
-    public void setidEveniment(UUID idEveniment) {
-        this.idEveniment = idEveniment;
-    }
-
     public UUID getidContract() {
         return idContract;
-    }
-
-    public void setidContract(UUID idContract) {
-        this.idContract = idContract;
     }
 
     public TipEveniment gettipEveniment() {

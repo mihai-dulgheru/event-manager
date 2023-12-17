@@ -1,13 +1,15 @@
 package main;
 
-import model.Client;
-import model.Contract;
-import model.Database;
-import model.Pachet;
+import model.*;
 import model.enums.MetodaDePlata;
 import model.enums.Moneda;
+import model.enums.TipEveniment;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 public class Main {
@@ -60,10 +62,25 @@ public class Main {
             System.out.println(Contract.readOne(contract.getId()));
             System.out.println(Contract.readMany());
 
+            // Test Eveniment
+            DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+            Eveniment eveniment = new Eveniment(UUID.randomUUID(), TipEveniment.NUNTA, new Date(df.parse("12-10-2025").getTime()), "locatie 1");
+            eveniment.insert();
+            eveniment.setLocatie("locatie 2");
+            eveniment.update();
+            System.out.println(Eveniment.readOne(eveniment.getidEveniment()));
+            System.out.println(Eveniment.readMany());
+            eveniment.delete();
+
+            eveniment.insert();
+            eveniment.setLocatie("locatie 2");
+            eveniment.update();
+            System.out.println(Eveniment.readOne(eveniment.getidEveniment()));
+            System.out.println(Eveniment.readMany());
+
             Database.disconnect();
-        } catch (SQLException e) {
+        } catch (SQLException | ParseException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
