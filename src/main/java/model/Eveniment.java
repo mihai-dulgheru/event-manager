@@ -2,7 +2,6 @@ package model;
 
 import model.enums.TipEveniment;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,10 +33,10 @@ public class Eveniment extends CRUDOperations {
     private final UUID idEveniment;
     private final UUID idContract;
     private TipEveniment tipEveniment;
-    private Date dataEveniment;
+    private String dataEveniment;
     private String locatie;
 
-    public Eveniment(UUID idContract, TipEveniment tipEveniment, Date dataEveniment, String locatie) {
+    public Eveniment(UUID idContract, TipEveniment tipEveniment, String dataEveniment, String locatie) {
         this.idEveniment = UUID.randomUUID();
         this.idContract = idContract;
         this.tipEveniment = tipEveniment;
@@ -45,7 +44,7 @@ public class Eveniment extends CRUDOperations {
         this.locatie = locatie;
     }
 
-    private Eveniment(UUID idEveniment, UUID idContract, TipEveniment tipEveniment, Date dataEveniment, String locatie) {
+    private Eveniment(UUID idEveniment, UUID idContract, TipEveniment tipEveniment, String dataEveniment, String locatie) {
         this.idEveniment = idEveniment;
         this.idContract = idContract;
         this.tipEveniment = tipEveniment;
@@ -78,9 +77,8 @@ public class Eveniment extends CRUDOperations {
         UUID idEveniment = UUID.fromString(resultSet.getString(1));
         UUID idContract = UUID.fromString(resultSet.getString(2));
         TipEveniment tipEveniment = TipEveniment.valueOf(resultSet.getString(3));
-        Date dataEveniment = resultSet.getDate(4);
+        String dataEveniment = resultSet.getString(4);
         String locatie = resultSet.getString(5);
-
 
         return new Eveniment(idEveniment, idContract, tipEveniment, dataEveniment, locatie);
     }
@@ -93,7 +91,7 @@ public class Eveniment extends CRUDOperations {
         insertEvent.setString(1, this.idEveniment.toString());
         insertEvent.setString(2, this.idContract.toString());
         insertEvent.setString(3, this.tipEveniment.toString());
-        insertEvent.setDate(4, this.dataEveniment);
+        insertEvent.setString(4, this.dataEveniment);
         insertEvent.setString(5, this.locatie);
 
         insertEvent.executeUpdate();
@@ -107,10 +105,9 @@ public class Eveniment extends CRUDOperations {
 
         updateEvent.setString(1, this.idContract.toString());
         updateEvent.setString(2, this.tipEveniment.toString());
-        updateEvent.setDate(3, this.dataEveniment);
+        updateEvent.setString(3, this.dataEveniment);
         updateEvent.setString(4, this.locatie);
         updateEvent.setString(5, this.idEveniment.toString());
-
 
         updateEvent.executeUpdate();
         System.out.println("1 row(s) affected");
@@ -143,11 +140,11 @@ public class Eveniment extends CRUDOperations {
         this.tipEveniment = tipEveniment;
     }
 
-    public Date getdataEveniment() {
+    public String getdataEveniment() {
         return dataEveniment;
     }
 
-    public void setdataEveniment(Date dataEveniment) {
+    public void setdataEveniment(String dataEveniment) {
         this.dataEveniment = dataEveniment;
     }
 

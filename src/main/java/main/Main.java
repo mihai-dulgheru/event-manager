@@ -5,11 +5,7 @@ import model.enums.MetodaDePlata;
 import model.enums.Moneda;
 import model.enums.TipEveniment;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 public class Main {
@@ -63,8 +59,7 @@ public class Main {
             System.out.println(Contract.readMany());
 
             // Test Eveniment
-            DateFormat df = new SimpleDateFormat("MM-dd-yyyy");
-            Eveniment eveniment = new Eveniment(UUID.randomUUID(), TipEveniment.NUNTA, new Date(df.parse("12-10-2025").getTime()), "locatie 1");
+            Eveniment eveniment = new Eveniment(UUID.randomUUID(), TipEveniment.NUNTA, "2023-12-17", "locatie 1");
             eveniment.insert();
             eveniment.setLocatie("locatie 2");
             eveniment.update();
@@ -78,8 +73,23 @@ public class Main {
             System.out.println(Eveniment.readOne(eveniment.getidEveniment()));
             System.out.println(Eveniment.readMany());
 
+            // Test Serviciu
+            Serviciu serviciu = new Serviciu(UUID.randomUUID(), "Nume Serviciu", 120.5f, 2f, "Detalii serviciu");
+            serviciu.insert();
+            serviciu.setObservatii("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas metus neque, sodales quis odio a, consectetur dignissim tortor. Vivamus et eros at erat viverra tincidunt ut eu dolor. Nam ultricies convallis nisi nec faucibus.");
+            serviciu.update();
+            System.out.println(Serviciu.readOne(serviciu.getId()));
+            System.out.println(Serviciu.readMany());
+            serviciu.delete();
+
+            serviciu.insert();
+            serviciu.setDurata(2.5f);
+            serviciu.update();
+            System.out.println(Serviciu.readOne(serviciu.getId()));
+            System.out.println(Serviciu.readMany());
+
             Database.disconnect();
-        } catch (SQLException | ParseException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
