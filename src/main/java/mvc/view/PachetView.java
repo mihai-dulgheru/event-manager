@@ -1,6 +1,6 @@
 package mvc.view;
 
-import interfaces.IPrint;
+import interfaces.Printable;
 
-public class PachetView implements IPrint {
+public class PachetView implements Printable {
 }

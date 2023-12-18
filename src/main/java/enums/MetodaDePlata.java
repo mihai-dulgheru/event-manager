@@ -1,14 +1,17 @@
 package enums;
 
-public enum MetodaDePlata {
+import interfaces.EnumOperations;
+
+import java.util.Map;
+
+public enum MetodaDePlata implements EnumOperations {
     CASH, CARD, TRANSFER_BANCAR;
 
     public static String getValues() {
-        StringBuilder values = new StringBuilder();
-        for (MetodaDePlata metodaDePlata : MetodaDePlata.values()) {
-            values.append("'").append(metodaDePlata).append("',");
-        }
-        values.deleteCharAt(values.length() - 1);
-        return values.toString();
+        return EnumOperations.getDefaultValues(MetodaDePlata.values());
+    }
+
+    public static Map<Integer, ? extends Enum<?>> getEnumMap() {
+        return EnumOperations.getDefaultEnumMap(MetodaDePlata.values());
     }
 }

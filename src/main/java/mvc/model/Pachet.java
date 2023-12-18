@@ -1,7 +1,7 @@
 package mvc.model;
 
-import abstractClasses.ACRUDOperations;
-import abstractClasses.AModel;
+import abstractClasses.AbstractCRUDOperations;
+import abstractClasses.AbstractModel;
 import database.Database;
 
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Pachet extends AModel {
+public class Pachet extends AbstractModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS pachete" +
@@ -49,7 +49,7 @@ public class Pachet extends AModel {
         this.detaliiPachet = detaliiPachet;
     }
 
-    public static ACRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM pachete WHERE id_pachet = ?";
         PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
 
@@ -59,10 +59,10 @@ public class Pachet extends AModel {
         return load(rs);
     }
 
-    public static List<ACRUDOperations> readMany() throws SQLException {
+    public static List<AbstractCRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM pachete");
 
-        List<ACRUDOperations> packages = new ArrayList<>();
+        List<AbstractCRUDOperations> packages = new ArrayList<>();
         while (rs.next()) {
             packages.add(load(rs));
         }
@@ -70,7 +70,7 @@ public class Pachet extends AModel {
         return packages;
     }
 
-    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idEveniment = UUID.fromString(resultSet.getString(2));
         String numePachet = resultSet.getString(3);
@@ -90,7 +90,7 @@ public class Pachet extends AModel {
         insertPackage.setString(4, this.detaliiPachet);
 
         insertPackage.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -104,7 +104,7 @@ public class Pachet extends AModel {
         updatePackage.setString(4, this.id.toString());
 
         updatePackage.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -115,7 +115,7 @@ public class Pachet extends AModel {
         deletePackage.setString(1, this.id.toString());
 
         deletePackage.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     public UUID getId() {
@@ -148,6 +148,11 @@ public class Pachet extends AModel {
 
     @Override
     public String toString() {
-        return "Pachet{" + "id=" + id + ", idEveniment=" + idEveniment + ", numePachet='" + numePachet + '\'' + ", detaliiPachet='" + detaliiPachet + '\'' + '}';
+        return "Pachet{" +
+                "id=" + id +
+                ", idEveniment=" + idEveniment +
+                ", numePachet='" + numePachet + '\'' +
+                ", detaliiPachet='" + detaliiPachet + '\'' +
+                '}';
     }
 }

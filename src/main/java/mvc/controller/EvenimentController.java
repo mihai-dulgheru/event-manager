@@ -1,9 +1,10 @@
 package mvc.controller;
 
+import interfaces.ViewUpdater;
 import mvc.model.Eveniment;
 import mvc.view.EvenimentView;
 
-public class EvenimentController {
+public class EvenimentController implements ViewUpdater {
     private Eveniment eveniment;
     private EvenimentView view;
 

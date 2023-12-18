@@ -1,7 +1,7 @@
 package mvc.model;
 
-import abstractClasses.ACRUDOperations;
-import abstractClasses.AModel;
+import abstractClasses.AbstractCRUDOperations;
+import abstractClasses.AbstractModel;
 import database.Database;
 import enums.TipEveniment;
 import util.DateUtil;
@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Eveniment extends AModel {
+public class Eveniment extends AbstractModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS evenimente" +
@@ -35,7 +35,7 @@ public class Eveniment extends AModel {
         }
     }
 
-    private final UUID idEveniment;
+    private final UUID id;
     private final UUID idContract;
     private final UUID idLocatie;
     private TipEveniment tipEveniment;
@@ -43,7 +43,7 @@ public class Eveniment extends AModel {
     private Integer nrParticipanti;
 
     public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti) {
-        this.idEveniment = UUID.randomUUID();
+        this.id = UUID.randomUUID();
         this.idContract = idContract;
         this.idLocatie = idLocatie;
         this.tipEveniment = tipEveniment;
@@ -59,9 +59,9 @@ public class Eveniment extends AModel {
         }
     }
 
-    private Eveniment(UUID idEveniment, UUID idContract, UUID idLocatie, TipEveniment tipEveniment,
+    private Eveniment(UUID id, UUID idContract, UUID idLocatie, TipEveniment tipEveniment,
                       String dataEveniment, Integer nrParticipanti) {
-        this.idEveniment = idEveniment;
+        this.id = id;
         this.idContract = idContract;
         this.idLocatie = idLocatie;
         this.tipEveniment = tipEveniment;
@@ -73,7 +73,7 @@ public class Eveniment extends AModel {
         }
     }
 
-    public static ACRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM evenimente WHERE id_eveniment = ?";
         PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
 
@@ -83,10 +83,10 @@ public class Eveniment extends AModel {
         return load(rs);
     }
 
-    public static List<ACRUDOperations> readMany() throws SQLException {
+    public static List<AbstractCRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM evenimente");
 
-        List<ACRUDOperations> packages = new ArrayList<>();
+        List<AbstractCRUDOperations> packages = new ArrayList<>();
         while (rs.next()) {
             packages.add(load(rs));
         }
@@ -94,7 +94,7 @@ public class Eveniment extends AModel {
         return packages;
     }
 
-    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID idEveniment = UUID.fromString(resultSet.getString(1));
         UUID idContract = UUID.fromString(resultSet.getString(2));
         UUID idLocatie = UUID.fromString(resultSet.getString(3));
@@ -125,7 +125,7 @@ public class Eveniment extends AModel {
         String insertString = "INSERT INTO evenimente VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement insertEvent = Database.connection.prepareStatement(insertString);
 
-        insertEvent.setString(1, this.idEveniment.toString());
+        insertEvent.setString(1, this.id.toString());
         insertEvent.setString(2, this.idContract.toString());
         insertEvent.setString(3, this.idLocatie.toString());
         insertEvent.setString(4, this.tipEveniment.toString());
@@ -133,7 +133,7 @@ public class Eveniment extends AModel {
         insertEvent.setInt(6, this.nrParticipanti);
 
         insertEvent.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -145,11 +145,11 @@ public class Eveniment extends AModel {
         updateEvent.setString(2, this.idLocatie.toString());
         updateEvent.setString(3, this.tipEveniment.toString());
         updateEvent.setString(4, this.dataEveniment);
-        updateEvent.setString(5, this.idEveniment.toString());
+        updateEvent.setString(5, this.id.toString());
         updateEvent.setInt(6, this.nrParticipanti);
 
         updateEvent.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -157,14 +157,14 @@ public class Eveniment extends AModel {
         String deleteString = "DELETE FROM evenimente WHERE id_eveniment = ?";
         PreparedStatement deleteEvent = Database.connection.prepareStatement(deleteString);
 
-        deleteEvent.setString(1, this.idEveniment.toString());
+        deleteEvent.setString(1, this.id.toString());
 
         deleteEvent.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
-    public UUID getIdEveniment() {
-        return idEveniment;
+    public UUID getId() {
+        return id;
     }
 
     public UUID getIdContract() {
@@ -210,7 +210,7 @@ public class Eveniment extends AModel {
     @Override
     public String toString() {
         return "Eveniment{" +
-                "idEveniment=" + idEveniment +
+                "id=" + id +
                 ", idContract=" + idContract +
                 ", idLocatie=" + idLocatie +
                 ", tipEveniment=" + tipEveniment +

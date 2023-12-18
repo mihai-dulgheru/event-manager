@@ -1,9 +1,10 @@
 package mvc.controller;
 
+import interfaces.ViewUpdater;
 import mvc.model.Contract;
 import mvc.view.ContractView;
 
-public class ContractController {
+public class ContractController implements ViewUpdater {
     private Contract contract;
     private ContractView view;
 

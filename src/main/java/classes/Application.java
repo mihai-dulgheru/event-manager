@@ -17,7 +17,7 @@ public class Application {
 
     public static void start() {
         Database.connect();
-        // Database.populate();
+        Database.populate();
         UUID uuid = autentificare();
         if (uuid != null) {
             CategorieEveniment categorieEveniment = alegeCategorieEveniment();
@@ -49,8 +49,8 @@ public class Application {
     }
 
     private static CategorieEveniment alegeCategorieEveniment() {
-        Map<Integer, CategorieEveniment> categorieEvenimentMap = CategorieEveniment.getCategorieEvenimentMap();
-        for (Map.Entry<Integer, CategorieEveniment> entry : categorieEvenimentMap.entrySet()) {
+        Map<Integer, ? extends Enum<?>> categorieEvenimentMap = CategorieEveniment.getEnumMap();
+        for (Map.Entry<Integer, ? extends Enum<?>> entry : categorieEvenimentMap.entrySet()) {
             System.out.println(entry.getKey() + ". " + entry.getValue());
         }
         System.out.println("Alegeți categoria evenimentului: ");
@@ -65,12 +65,12 @@ public class Application {
             System.out.println("Opțiunea nu este un număr!");
             return alegeCategorieEveniment();
         }
-        return categorieEvenimentMap.get(option);
+        return (CategorieEveniment) categorieEvenimentMap.get(option);
     }
 
     private static TipEveniment alegeTipEveniment() {
-        Map<Integer, TipEveniment> tipEvenimentMap = TipEveniment.getTipEvenimentMap();
-        for (Map.Entry<Integer, TipEveniment> entry : tipEvenimentMap.entrySet()) {
+        Map<Integer, ? extends Enum<?>> tipEvenimentMap = TipEveniment.getEnumMap();
+        for (Map.Entry<Integer, ? extends Enum<?>> entry : tipEvenimentMap.entrySet()) {
             System.out.println(entry.getKey() + ". " + entry.getValue());
         }
         System.out.println("Alegeți tipul evenimentului: ");
@@ -85,6 +85,6 @@ public class Application {
             System.out.println("Opțiunea nu este un număr!");
             return alegeTipEveniment();
         }
-        return tipEvenimentMap.get(option);
+        return (TipEveniment) tipEvenimentMap.get(option);
     }
 }

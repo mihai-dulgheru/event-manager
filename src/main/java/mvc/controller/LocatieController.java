@@ -1,9 +1,10 @@
 package mvc.controller;
 
+import interfaces.ViewUpdater;
 import mvc.model.Locatie;
 import mvc.view.LocatieView;
 
-public class LocatieController {
+public class LocatieController implements ViewUpdater {
     private Locatie locatie;
     private LocatieView view;
 

@@ -1,25 +1,17 @@
 package enums;
 
-import java.util.Map;
-import java.util.TreeMap;
+import interfaces.EnumOperations;
 
-public enum TipEveniment {
+import java.util.Map;
+
+public enum TipEveniment implements EnumOperations {
     BOTEZ, CONCERT, EXPOZITIE, FESTIVAL, NUNTA, PETRECERE_ABSOLVIRE;
 
     public static String getValues() {
-        StringBuilder values = new StringBuilder();
-        for (TipEveniment tipEveniment : TipEveniment.values()) {
-            values.append("'").append(tipEveniment).append("',");
-        }
-        values.deleteCharAt(values.length() - 1);
-        return values.toString();
+        return EnumOperations.getDefaultValues(TipEveniment.values());
     }
 
-    public static Map<Integer, TipEveniment> getTipEvenimentMap() {
-        Map<Integer, TipEveniment> tipEvenimentMap = new TreeMap<>();
-        for (int i = 0; i < TipEveniment.values().length; i++) {
-            tipEvenimentMap.put(i + 1, TipEveniment.values()[i]);
-        }
-        return tipEvenimentMap;
+    public static Map<Integer, ? extends Enum<?>> getEnumMap() {
+        return EnumOperations.getDefaultEnumMap(TipEveniment.values());
     }
 }

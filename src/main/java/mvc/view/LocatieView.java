@@ -1,6 +1,6 @@
 package mvc.view;
 
-import interfaces.IPrint;
+import interfaces.Printable;
 
-public class LocatieView implements IPrint {
+public class LocatieView implements Printable {
 }

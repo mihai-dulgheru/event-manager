@@ -1,6 +1,6 @@
 package mvc.view;
 
-import interfaces.IPrint;
+import interfaces.Printable;
 
-public class ContractView implements IPrint {
+public class ContractView implements Printable {
 }

@@ -1,7 +1,7 @@
 package mvc.model;
 
-import abstractClasses.ACRUDOperations;
-import abstractClasses.AModel;
+import abstractClasses.AbstractCRUDOperations;
+import abstractClasses.AbstractModel;
 import database.Database;
 
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Client extends AModel {
+public class Client extends AbstractModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS clienti" +
@@ -69,7 +69,7 @@ public class Client extends AModel {
         this.parola = parola;
     }
 
-    public static ACRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM clienti WHERE id_client = ?";
         PreparedStatement selectClient = Database.connection.prepareStatement(selectString);
 
@@ -79,10 +79,10 @@ public class Client extends AModel {
         return load(rs);
     }
 
-    public static List<ACRUDOperations> readMany() throws SQLException {
+    public static List<AbstractCRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM clienti");
 
-        List<ACRUDOperations> clients = new ArrayList<>();
+        List<AbstractCRUDOperations> clients = new ArrayList<>();
         while (rs.next()) {
             clients.add(load(rs));
         }
@@ -90,7 +90,7 @@ public class Client extends AModel {
         return clients;
     }
 
-    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         String numeClient = resultSet.getString(2);
         String prenumeClient = resultSet.getString(3);
@@ -137,7 +137,7 @@ public class Client extends AModel {
         insertClient.setString(9, this.parola);
 
         insertClient.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -156,7 +156,7 @@ public class Client extends AModel {
         updateClient.setString(9, this.id.toString());
 
         updateClient.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -167,7 +167,7 @@ public class Client extends AModel {
         deleteClient.setString(1, this.id.toString());
 
         deleteClient.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     public UUID getId() {

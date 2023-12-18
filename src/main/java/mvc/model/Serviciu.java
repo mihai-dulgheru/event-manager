@@ -1,7 +1,7 @@
 package mvc.model;
 
-import abstractClasses.ACRUDOperations;
-import abstractClasses.AModel;
+import abstractClasses.AbstractCRUDOperations;
+import abstractClasses.AbstractModel;
 import database.Database;
 
 import java.sql.PreparedStatement;
@@ -14,17 +14,17 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Serviciu extends AModel {
+public class Serviciu extends AbstractModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS servicii" +
                     "(" +
-                    "    id_serviciu      VARCHAR(36) PRIMARY KEY," +
-                    "    id_pachet   VARCHAR(36)  NOT NULL," +
-                    "    nume_serviciu    VARCHAR(255) NOT NULL," +
+                    "    id_serviciu   VARCHAR(36) PRIMARY KEY," +
+                    "    id_pachet     VARCHAR(36)  NOT NULL," +
+                    "    nume_serviciu VARCHAR(255) NOT NULL," +
                     "    cost_serviciu REAL(255) NOT NULL," +
-                    "    durata REAL(255)," +
-                    "    observatii VARCHAR(255) NOT NULL," +
+                    "    durata        REAL(255)," +
+                    "    observatii    VARCHAR(255) NOT NULL," +
                     "    FOREIGN KEY (id_pachet) REFERENCES pachete (id_pachet)" +
                     ")");
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class Serviciu extends AModel {
         this.observatii = observatii;
     }
 
-    public static ACRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM servicii WHERE id_serviciu = ?";
         PreparedStatement selectService = Database.connection.prepareStatement(selectString);
 
@@ -80,10 +80,10 @@ public class Serviciu extends AModel {
         return load(rs);
     }
 
-    public static List<ACRUDOperations> readMany() throws SQLException {
+    public static List<AbstractCRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM servicii");
 
-        List<ACRUDOperations> services = new ArrayList<>();
+        List<AbstractCRUDOperations> services = new ArrayList<>();
         while (rs.next()) {
             services.add(load(rs));
         }
@@ -91,7 +91,7 @@ public class Serviciu extends AModel {
         return services;
     }
 
-    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idPachet = UUID.fromString(resultSet.getString(2));
         String numeServiciu = resultSet.getString(3);
@@ -120,7 +120,7 @@ public class Serviciu extends AModel {
         insertService.setString(6, this.observatii);
 
         insertService.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -142,7 +142,7 @@ public class Serviciu extends AModel {
         updateService.setString(6, this.id.toString());
 
         updateService.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
 
@@ -154,7 +154,7 @@ public class Serviciu extends AModel {
         deleteService.setString(1, this.id.toString());
 
         deleteService.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     public Float simplifyNullable(Float nullableFloat) {
@@ -207,6 +207,13 @@ public class Serviciu extends AModel {
 
     @Override
     public String toString() {
-        return "Serviciu{" + "id=" + id + ", idPachet=" + idPachet + ", numerServiciu='" + numeServiciu + '\'' + ", costServiciu='" + costServiciu + '\'' + ", durata='" + durata + '\'' + ", observatii='" + observatii + '\'' + '}';
+        return "Serviciu{" +
+                "id=" + id +
+                ", idPachet=" + idPachet +
+                ", numeServiciu='" + numeServiciu + '\'' +
+                ", costServiciu=" + costServiciu +
+                ", durata=" + durata +
+                ", observatii='" + observatii + '\'' +
+                '}';
     }
 }

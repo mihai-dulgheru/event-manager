@@ -1,9 +1,10 @@
 package mvc.controller;
 
+import interfaces.ViewUpdater;
 import mvc.model.Pachet;
 import mvc.view.PachetView;
 
-public class PachetController {
+public class PachetController implements ViewUpdater {
     private Pachet pachet;
     private PachetView view;
 

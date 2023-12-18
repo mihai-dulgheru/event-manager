@@ -1,7 +1,7 @@
 package mvc.model;
 
-import abstractClasses.ACRUDOperations;
-import abstractClasses.AModel;
+import abstractClasses.AbstractCRUDOperations;
+import abstractClasses.AbstractModel;
 import database.Database;
 
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Locatie extends AModel {
+public class Locatie extends AbstractModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS locatii" +
@@ -28,23 +28,23 @@ public class Locatie extends AModel {
         }
     }
 
-    private final UUID idLocatie;
+    private final UUID id;
     private String denumire;
     private int capacitate;
 
     public Locatie(String denumire, int capacitate) {
-        this.idLocatie = UUID.randomUUID();
+        this.id = UUID.randomUUID();
         this.denumire = denumire;
         this.capacitate = capacitate;
     }
 
-    private Locatie(UUID idLocatie, String denumire, int capacitate) {
-        this.idLocatie = idLocatie;
+    private Locatie(UUID id, String denumire, int capacitate) {
+        this.id = id;
         this.denumire = denumire;
         this.capacitate = capacitate;
     }
 
-    public static ACRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM locatii WHERE id_locatie = ?";
         PreparedStatement selectLocation = Database.connection.prepareStatement(selectString);
 
@@ -54,10 +54,10 @@ public class Locatie extends AModel {
         return load(rs);
     }
 
-    public static List<ACRUDOperations> readMany() throws SQLException {
+    public static List<AbstractCRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM locatii");
 
-        List<ACRUDOperations> locations = new ArrayList<>();
+        List<AbstractCRUDOperations> locations = new ArrayList<>();
         while (rs.next()) {
             locations.add(load(rs));
         }
@@ -65,7 +65,7 @@ public class Locatie extends AModel {
         return locations;
     }
 
-    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID idLocatie = UUID.fromString(resultSet.getString(1));
         String denumire = resultSet.getString(2);
         int capacitate = resultSet.getInt(3);
@@ -78,12 +78,12 @@ public class Locatie extends AModel {
         String insertString = "INSERT INTO locatii VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = Database.connection.prepareStatement(insertString);
 
-        preparedStatement.setString(1, idLocatie.toString());
+        preparedStatement.setString(1, id.toString());
         preparedStatement.setString(2, denumire);
         preparedStatement.setInt(3, capacitate);
 
         preparedStatement.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -93,10 +93,10 @@ public class Locatie extends AModel {
 
         preparedStatement.setString(1, denumire);
         preparedStatement.setInt(2, capacitate);
-        preparedStatement.setString(3, idLocatie.toString());
+        preparedStatement.setString(3, id.toString());
 
         preparedStatement.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -104,14 +104,14 @@ public class Locatie extends AModel {
         String deleteString = "DELETE FROM locatii WHERE id_locatie = ?";
         PreparedStatement preparedStatement = Database.connection.prepareStatement(deleteString);
 
-        preparedStatement.setString(1, idLocatie.toString());
+        preparedStatement.setString(1, id.toString());
 
         preparedStatement.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
-    public UUID getIdLocatie() {
-        return idLocatie;
+    public UUID getId() {
+        return id;
     }
 
     public String getDenumire() {
@@ -132,6 +132,10 @@ public class Locatie extends AModel {
 
     @Override
     public String toString() {
-        return "Locatie{" + "idLocatie=" + idLocatie + ", denumire='" + denumire + '\'' + ", capacitate=" + capacitate + '}';
+        return "Locatie{" +
+                "id=" + id +
+                ", denumire='" + denumire + '\'' +
+                ", capacitate=" + capacitate +
+                '}';
     }
 }

@@ -1,6 +1,6 @@
 package mvc.view;
 
-import interfaces.IPrint;
+import interfaces.Printable;
 
-public class EvenimentView implements IPrint {
+public class EvenimentView implements Printable {
 }

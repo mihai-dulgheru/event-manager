@@ -1,7 +1,7 @@
 package mvc.model;
 
-import abstractClasses.ACRUDOperations;
-import abstractClasses.AModel;
+import abstractClasses.AbstractCRUDOperations;
+import abstractClasses.AbstractModel;
 import database.Database;
 import enums.MetodaDePlata;
 import enums.Moneda;
@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Contract extends AModel {
+public class Contract extends AbstractModel {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS contracte" +
@@ -64,7 +64,7 @@ public class Contract extends AModel {
         this.metodaDePlata = metodaDePlata;
     }
 
-    public static ACRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM contracte WHERE id_contract = ?";
         PreparedStatement selectContract = Database.connection.prepareStatement(selectString);
 
@@ -74,10 +74,10 @@ public class Contract extends AModel {
         return load(rs);
     }
 
-    public static List<ACRUDOperations> readMany() throws SQLException {
+    public static List<AbstractCRUDOperations> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM contracte");
 
-        List<ACRUDOperations> contracts = new ArrayList<>();
+        List<AbstractCRUDOperations> contracts = new ArrayList<>();
         while (rs.next()) {
             contracts.add(load(rs));
         }
@@ -85,7 +85,7 @@ public class Contract extends AModel {
         return contracts;
     }
 
-    protected static ACRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idClient = UUID.fromString(resultSet.getString(2));
         String dataIncheiere = resultSet.getString(3);
@@ -111,7 +111,7 @@ public class Contract extends AModel {
         insertContract.setString(7, this.metodaDePlata.toString());
 
         insertContract.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -128,7 +128,7 @@ public class Contract extends AModel {
         updateContract.setString(7, this.id.toString());
 
         updateContract.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     @Override
@@ -139,7 +139,7 @@ public class Contract extends AModel {
         deleteContract.setString(1, this.id.toString());
 
         deleteContract.executeUpdate();
-        System.out.println("1 row(s) affected");
+        System.out.println("1 row affected");
     }
 
     public UUID getId() {

@@ -1,9 +1,10 @@
 package mvc.controller;
 
+import interfaces.ViewUpdater;
 import mvc.model.Serviciu;
 import mvc.view.ServiciuView;
 
-public class ServiciuController {
+public class ServiciuController implements ViewUpdater {
     private Serviciu serviciu;
     private ServiciuView view;
 

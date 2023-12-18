@@ -1,9 +1,10 @@
 package mvc.controller;
 
+import interfaces.ViewUpdater;
 import mvc.model.Client;
 import mvc.view.ClientView;
 
-public class ClientController {
+public class ClientController implements ViewUpdater {
     private Client client;
     private ClientView view;
 

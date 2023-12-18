@@ -71,11 +71,11 @@ public final class Database {
             }
 
             Eveniment[] events = {
-                    new Eveniment(contracts[0].getId(), locations[0].getIdLocatie(), TipEveniment.NUNTA, "2023-12-17", 50),
-                    new Eveniment(contracts[1].getId(), locations[1].getIdLocatie(), TipEveniment.CONCERT, "2023-12-18", 150),
-                    new Eveniment(contracts[2].getId(), locations[2].getIdLocatie(), TipEveniment.BOTEZ, "2023-12-19", 250),
-                    new Eveniment(contracts[3].getId(), locations[3].getIdLocatie(), TipEveniment.EXPOZITIE, "2023-12-20", 350),
-                    new Eveniment(contracts[4].getId(), locations[4].getIdLocatie(), TipEveniment.PETRECERE_ABSOLVIRE, "2023-12-21", 450),
+                    new Eveniment(contracts[0].getId(), locations[0].getId(), TipEveniment.NUNTA, "2023-12-17", 50),
+                    new Eveniment(contracts[1].getId(), locations[1].getId(), TipEveniment.CONCERT, "2023-12-18", 150),
+                    new Eveniment(contracts[2].getId(), locations[2].getId(), TipEveniment.BOTEZ, "2023-12-19", 250),
+                    new Eveniment(contracts[3].getId(), locations[3].getId(), TipEveniment.EXPOZITIE, "2023-12-20", 350),
+                    new Eveniment(contracts[4].getId(), locations[4].getId(), TipEveniment.PETRECERE_ABSOLVIRE, "2023-12-21", 450),
             };
 
             for (Eveniment eveniment : events) {
@@ -83,11 +83,11 @@ public final class Database {
             }
 
             Pachet[] packets = {
-                    new Pachet(events[0].getIdEveniment(), "Nume Pachet 1", "Detalii Pachet 1"),
-                    new Pachet(events[1].getIdEveniment(), "Nume Pachet 2", "Detalii Pachet 2"),
-                    new Pachet(events[2].getIdEveniment(), "Nume Pachet 3", "Detalii Pachet 3"),
-                    new Pachet(events[3].getIdEveniment(), "Nume Pachet 4", "Detalii Pachet 4"),
-                    new Pachet(events[4].getIdEveniment(), "Nume Pachet 5", "Detalii Pachet 5"),};
+                    new Pachet(events[0].getId(), "Nume Pachet 1", "Detalii Pachet 1"),
+                    new Pachet(events[1].getId(), "Nume Pachet 2", "Detalii Pachet 2"),
+                    new Pachet(events[2].getId(), "Nume Pachet 3", "Detalii Pachet 3"),
+                    new Pachet(events[3].getId(), "Nume Pachet 4", "Detalii Pachet 4"),
+                    new Pachet(events[4].getId(), "Nume Pachet 5", "Detalii Pachet 5"),};
 
             for (Pachet pachet : packets) {
                 pachet.insert();
