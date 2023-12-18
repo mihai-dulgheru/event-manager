@@ -5,6 +5,7 @@ import abstractClasses.AModel;
 import database.Database;
 import enums.MetodaDePlata;
 import enums.Moneda;
+import util.DateUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,10 +44,10 @@ public class Contract extends AModel {
     private String observatii;
     private MetodaDePlata metodaDePlata;
 
-    public Contract(UUID idClient, String dataIncheiere, Double costTotal, Moneda moneda, String observatii, MetodaDePlata metodaDePlata) {
+    public Contract(UUID idClient, Double costTotal, Moneda moneda, String observatii, MetodaDePlata metodaDePlata) {
         this.id = UUID.randomUUID();
         this.idClient = idClient;
-        this.dataIncheiere = dataIncheiere;
+        this.dataIncheiere = DateUtil.today();
         this.costTotal = costTotal;
         this.moneda = moneda;
         this.observatii = observatii;

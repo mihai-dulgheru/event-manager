@@ -42,6 +42,7 @@ public class Client extends AModel {
     private String email;
     private String telefon;
     private String username;
+    // TODO: hash-uire parolă
     private String parola;
 
     public Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
@@ -111,6 +112,9 @@ public class Client extends AModel {
             selectClient.setString(1, username);
 
             ResultSet rs = selectClient.executeQuery();
+            if (!rs.next()) {
+                return null;
+            }
             return (Client) load(rs);
         } catch (SQLException e) {
             throw new RuntimeException(e);

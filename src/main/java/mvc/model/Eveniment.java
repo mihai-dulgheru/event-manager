@@ -4,6 +4,7 @@ import abstractClasses.ACRUDOperations;
 import abstractClasses.AModel;
 import database.Database;
 import enums.TipEveniment;
+import util.DateUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,11 +21,12 @@ public class Eveniment extends AModel {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS evenimente" +
                     "(" +
-                    "    id_eveniment   VARCHAR(36) PRIMARY KEY," +
-                    "    id_contract    VARCHAR(36)  NOT NULL," +
-                    "    id_locatie     VARCHAR(36)  NOT NULL," +
-                    "    tip_eveniment  VARCHAR(255) NOT NULL," +
-                    "    data_eveniment DATE NOT NULL," +
+                    "    id_eveniment    VARCHAR(36) PRIMARY KEY," +
+                    "    id_contract     VARCHAR(36)  NOT NULL," +
+                    "    id_locatie      VARCHAR(36)  NOT NULL," +
+                    "    tip_eveniment   VARCHAR(255) NOT NULL," +
+                    "    data_eveniment  DATE NOT NULL," +
+                    "    nr_participanti INTEGER DEFAULT 0," +
                     "    FOREIGN KEY (id_contract) REFERENCES contracte (id_contract)," +
                     "    FOREIGN KEY (id_locatie) REFERENCES locatii (id_locatie)" +
                     ")");
@@ -38,21 +40,37 @@ public class Eveniment extends AModel {
     private final UUID idLocatie;
     private TipEveniment tipEveniment;
     private String dataEveniment;
+    private Integer nrParticipanti;
 
-    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment) {
+    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti) {
         this.idEveniment = UUID.randomUUID();
         this.idContract = idContract;
         this.idLocatie = idLocatie;
         this.tipEveniment = tipEveniment;
-        this.dataEveniment = dataEveniment;
+        if (DateUtil.isValidDate(dataEveniment)) {
+            this.dataEveniment = dataEveniment;
+        } else {
+            throw new IllegalArgumentException("Data evenimentului nu este valida!");
+        }
+        if (isValid(nrParticipanti)) {
+            this.nrParticipanti = nrParticipanti;
+        } else {
+            throw new IllegalArgumentException("Numarul de participanti nu este valid!");
+        }
     }
 
-    private Eveniment(UUID idEveniment, UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment) {
+    private Eveniment(UUID idEveniment, UUID idContract, UUID idLocatie, TipEveniment tipEveniment,
+                      String dataEveniment, Integer nrParticipanti) {
         this.idEveniment = idEveniment;
         this.idContract = idContract;
         this.idLocatie = idLocatie;
         this.tipEveniment = tipEveniment;
         this.dataEveniment = dataEveniment;
+        if (isValid(nrParticipanti)) {
+            this.nrParticipanti = nrParticipanti;
+        } else {
+            throw new IllegalArgumentException("Numarul de participanti nu este valid!");
+        }
     }
 
     public static ACRUDOperations readOne(UUID id) throws SQLException {
@@ -82,13 +100,29 @@ public class Eveniment extends AModel {
         UUID idLocatie = UUID.fromString(resultSet.getString(3));
         TipEveniment tipEveniment = TipEveniment.valueOf(resultSet.getString(4));
         String dataEveniment = resultSet.getString(5);
+        Integer nrParticipanti = resultSet.getInt(6);
 
-        return new Eveniment(idEveniment, idContract, idLocatie, tipEveniment, dataEveniment);
+        return new Eveniment(idEveniment, idContract, idLocatie, tipEveniment, dataEveniment, nrParticipanti);
+    }
+
+    private Boolean isValid(Integer nrParticipanti) {
+        try {
+            if (nrParticipanti < 0) {
+                return false;
+            }
+            if (this.idLocatie.toString().isEmpty()) {
+                return false;
+            }
+            Locatie locatie = (Locatie) Locatie.readOne(this.idLocatie);
+            return nrParticipanti <= locatie.getCapacitate();
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     @Override
     public void insert() throws SQLException {
-        String insertString = "INSERT INTO evenimente VALUES (?, ?, ?, ?, ?)";
+        String insertString = "INSERT INTO evenimente VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement insertEvent = Database.connection.prepareStatement(insertString);
 
         insertEvent.setString(1, this.idEveniment.toString());
@@ -96,6 +130,7 @@ public class Eveniment extends AModel {
         insertEvent.setString(3, this.idLocatie.toString());
         insertEvent.setString(4, this.tipEveniment.toString());
         insertEvent.setString(5, this.dataEveniment);
+        insertEvent.setInt(6, this.nrParticipanti);
 
         insertEvent.executeUpdate();
         System.out.println("1 row(s) affected");
@@ -103,14 +138,15 @@ public class Eveniment extends AModel {
 
     @Override
     public void update() throws SQLException {
-        String updateString = "UPDATE evenimente SET id_contract = ?, tip_eveniment = ?, data_eveniment = ?, id_locatie = ? WHERE id_eveniment = ?";
+        String updateString = "UPDATE evenimente SET id_contract = ?, id_locatie = ?, tip_eveniment = ?, data_eveniment = ?, nr_participanti = ? WHERE id_eveniment = ?";
         PreparedStatement updateEvent = Database.connection.prepareStatement(updateString);
 
         updateEvent.setString(1, this.idContract.toString());
-        updateEvent.setString(2, this.tipEveniment.toString());
-        updateEvent.setString(3, this.dataEveniment);
-        updateEvent.setString(4, this.idLocatie.toString());
+        updateEvent.setString(2, this.idLocatie.toString());
+        updateEvent.setString(3, this.tipEveniment.toString());
+        updateEvent.setString(4, this.dataEveniment);
         updateEvent.setString(5, this.idEveniment.toString());
+        updateEvent.setInt(6, this.nrParticipanti);
 
         updateEvent.executeUpdate();
         System.out.println("1 row(s) affected");
@@ -127,32 +163,48 @@ public class Eveniment extends AModel {
         System.out.println("1 row(s) affected");
     }
 
-    public UUID getidEveniment() {
+    public UUID getIdEveniment() {
         return idEveniment;
     }
 
-    public UUID getidContract() {
+    public UUID getIdContract() {
         return idContract;
-    }
-
-    public TipEveniment gettipEveniment() {
-        return tipEveniment;
-    }
-
-    public void settipEveniment(TipEveniment tipEveniment) {
-        this.tipEveniment = tipEveniment;
-    }
-
-    public String getdataEveniment() {
-        return dataEveniment;
-    }
-
-    public void setdataEveniment(String dataEveniment) {
-        this.dataEveniment = dataEveniment;
     }
 
     public UUID getIdLocatie() {
         return idLocatie;
+    }
+
+    public TipEveniment getTipEveniment() {
+        return tipEveniment;
+    }
+
+    public void setTipEveniment(TipEveniment tipEveniment) {
+        this.tipEveniment = tipEveniment;
+    }
+
+    public String getDataEveniment() {
+        return dataEveniment;
+    }
+
+    public void setDataEveniment(String dataEveniment) {
+        if (DateUtil.isValidDate(dataEveniment)) {
+            this.dataEveniment = dataEveniment;
+        } else {
+            throw new IllegalArgumentException("Data evenimentului nu este valida!");
+        }
+    }
+
+    public Integer getNrParticipanti() {
+        return nrParticipanti;
+    }
+
+    public void setNrParticipanti(Integer nrParticipanti) {
+        if (isValid(nrParticipanti)) {
+            this.nrParticipanti = nrParticipanti;
+        } else {
+            throw new IllegalArgumentException("Numarul de participanti nu este valid!");
+        }
     }
 
     @Override
@@ -160,9 +212,10 @@ public class Eveniment extends AModel {
         return "Eveniment{" +
                 "idEveniment=" + idEveniment +
                 ", idContract=" + idContract +
+                ", idLocatie=" + idLocatie +
                 ", tipEveniment=" + tipEveniment +
-                ", dataEveniment=" + dataEveniment +
-                ", idLocatie='" + idLocatie + '\'' +
+                ", dataEveniment='" + dataEveniment + '\'' +
+                ", nrParticipanti=" + nrParticipanti +
                 '}';
     }
 }

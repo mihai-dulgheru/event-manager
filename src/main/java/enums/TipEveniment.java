@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public enum TipEveniment {
-    BOTEZ, CONCERT, CONFERINTA, CUNUNIE, EXPOZITIE, FESTIVAL, INMORMANTARE, NUNTA, PETRECERE_ABSOLVIRE;
+    BOTEZ, CONCERT, EXPOZITIE, FESTIVAL, NUNTA, PETRECERE_ABSOLVIRE;
 
     public static String getValues() {
         StringBuilder values = new StringBuilder();

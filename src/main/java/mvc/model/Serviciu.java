@@ -44,7 +44,11 @@ public class Serviciu extends AModel {
         this.idPachet = idPachet;
         this.numeServiciu = numeServiciu;
         this.costServiciu = costServiciu;
-        this.durata = durata;
+        if (durata != null && durata > 0) {
+            this.durata = durata;
+        } else {
+            throw new IllegalArgumentException("Durata nu este valida!");
+        }
         this.observatii = observatii;
     }
 
@@ -186,7 +190,11 @@ public class Serviciu extends AModel {
     }
 
     public void setDurata(Float durata) {
-        this.durata = durata;
+        if (durata != null && durata > 0) {
+            this.durata = durata;
+        } else {
+            throw new IllegalArgumentException("Durata nu este valida!");
+        }
     }
 
     public String getObservatii() {

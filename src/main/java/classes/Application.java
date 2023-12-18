@@ -1,9 +1,9 @@
 package classes;
 
 import database.Database;
+import enums.CategorieEveniment;
 import enums.TipEveniment;
 import mvc.model.Client;
-import mvc.model.Pachet;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -17,11 +17,14 @@ public class Application {
 
     public static void start() {
         Database.connect();
-        Database.populate();
+        // Database.populate();
         UUID uuid = autentificare();
         if (uuid != null) {
-            TipEveniment tipEveniment = alegeEveniment();
-            Pachet pachet = alegePachet(tipEveniment);
+            CategorieEveniment categorieEveniment = alegeCategorieEveniment();
+            TipEveniment tipEveniment = alegeTipEveniment();
+            System.out.println(categorieEveniment);
+            System.out.println(tipEveniment);
+            // TODO: adaugă abstract factory
         }
         Database.disconnect();
     }
@@ -32,6 +35,10 @@ public class Application {
         System.out.println("Introduceți parola: ");
         String parola = SCANNER.nextLine();
         Client client = Client.findByUsername(username);
+        if (client == null) {
+            System.out.println("Autentificare eșuată!");
+            return null;
+        }
         if (client.getParola().equals(parola)) {
             System.out.println("Autentificare reușită!");
             return client.getId();
@@ -41,29 +48,43 @@ public class Application {
         }
     }
 
-    private static TipEveniment alegeEveniment() {
+    private static CategorieEveniment alegeCategorieEveniment() {
+        Map<Integer, CategorieEveniment> categorieEvenimentMap = CategorieEveniment.getCategorieEvenimentMap();
+        for (Map.Entry<Integer, CategorieEveniment> entry : categorieEvenimentMap.entrySet()) {
+            System.out.println(entry.getKey() + ". " + entry.getValue());
+        }
+        System.out.println("Alegeți categoria evenimentului: ");
+        Integer option;
+        try {
+            option = Integer.parseInt(SCANNER.nextLine());
+            if (!categorieEvenimentMap.containsKey(option)) {
+                System.out.println("Opțiunea nu există!");
+                return alegeCategorieEveniment();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Opțiunea nu este un număr!");
+            return alegeCategorieEveniment();
+        }
+        return categorieEvenimentMap.get(option);
+    }
+
+    private static TipEveniment alegeTipEveniment() {
         Map<Integer, TipEveniment> tipEvenimentMap = TipEveniment.getTipEvenimentMap();
         for (Map.Entry<Integer, TipEveniment> entry : tipEvenimentMap.entrySet()) {
             System.out.println(entry.getKey() + ". " + entry.getValue());
         }
-        System.out.println("Alegeți evenimentul: ");
+        System.out.println("Alegeți tipul evenimentului: ");
         Integer option;
         try {
             option = Integer.parseInt(SCANNER.nextLine());
             if (!tipEvenimentMap.containsKey(option)) {
                 System.out.println("Opțiunea nu există!");
-                return alegeEveniment();
+                return alegeTipEveniment();
             }
         } catch (NumberFormatException e) {
             System.out.println("Opțiunea nu este un număr!");
-            return alegeEveniment();
+            return alegeTipEveniment();
         }
         return tipEvenimentMap.get(option);
-    }
-
-    private static Pachet alegePachet(TipEveniment tipEveniment) {
-        System.out.println("Alegeți pachetul: ");
-
-        return null;
     }
 }
