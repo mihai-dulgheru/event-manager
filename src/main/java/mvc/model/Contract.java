@@ -1,6 +1,5 @@
 package mvc.model;
 
-import abstractClasses.AbstractCRUDOperations;
 import abstractClasses.AbstractModel;
 import database.Database;
 import enums.MetodaDePlata;
@@ -64,7 +63,7 @@ public class Contract extends AbstractModel {
         this.metodaDePlata = metodaDePlata;
     }
 
-    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractModel readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM contracte WHERE id_contract = ?";
         PreparedStatement selectContract = Database.connection.prepareStatement(selectString);
 
@@ -74,10 +73,10 @@ public class Contract extends AbstractModel {
         return load(rs);
     }
 
-    public static List<AbstractCRUDOperations> readMany() throws SQLException {
+    public static List<AbstractModel> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM contracte");
 
-        List<AbstractCRUDOperations> contracts = new ArrayList<>();
+        List<AbstractModel> contracts = new ArrayList<>();
         while (rs.next()) {
             contracts.add(load(rs));
         }
@@ -85,7 +84,7 @@ public class Contract extends AbstractModel {
         return contracts;
     }
 
-    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractModel load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idClient = UUID.fromString(resultSet.getString(2));
         String dataIncheiere = resultSet.getString(3);

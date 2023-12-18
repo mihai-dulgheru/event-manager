@@ -1,6 +1,5 @@
 package mvc.model;
 
-import abstractClasses.AbstractCRUDOperations;
 import abstractClasses.AbstractModel;
 import database.Database;
 
@@ -49,7 +48,7 @@ public class Pachet extends AbstractModel {
         this.detaliiPachet = detaliiPachet;
     }
 
-    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractModel readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM pachete WHERE id_pachet = ?";
         PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
 
@@ -59,10 +58,10 @@ public class Pachet extends AbstractModel {
         return load(rs);
     }
 
-    public static List<AbstractCRUDOperations> readMany() throws SQLException {
+    public static List<AbstractModel> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM pachete");
 
-        List<AbstractCRUDOperations> packages = new ArrayList<>();
+        List<AbstractModel> packages = new ArrayList<>();
         while (rs.next()) {
             packages.add(load(rs));
         }
@@ -70,7 +69,7 @@ public class Pachet extends AbstractModel {
         return packages;
     }
 
-    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractModel load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idEveniment = UUID.fromString(resultSet.getString(2));
         String numePachet = resultSet.getString(3);

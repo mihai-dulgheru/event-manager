@@ -1,6 +1,5 @@
 package mvc.model;
 
-import abstractClasses.AbstractCRUDOperations;
 import abstractClasses.AbstractModel;
 import database.Database;
 
@@ -44,7 +43,7 @@ public class Locatie extends AbstractModel {
         this.capacitate = capacitate;
     }
 
-    public static AbstractCRUDOperations readOne(UUID id) throws SQLException {
+    public static AbstractModel readOne(UUID id) throws SQLException {
         String selectString = "SELECT * FROM locatii WHERE id_locatie = ?";
         PreparedStatement selectLocation = Database.connection.prepareStatement(selectString);
 
@@ -54,10 +53,10 @@ public class Locatie extends AbstractModel {
         return load(rs);
     }
 
-    public static List<AbstractCRUDOperations> readMany() throws SQLException {
+    public static List<AbstractModel> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM locatii");
 
-        List<AbstractCRUDOperations> locations = new ArrayList<>();
+        List<AbstractModel> locations = new ArrayList<>();
         while (rs.next()) {
             locations.add(load(rs));
         }
@@ -65,7 +64,7 @@ public class Locatie extends AbstractModel {
         return locations;
     }
 
-    protected static AbstractCRUDOperations load(ResultSet resultSet) throws SQLException {
+    protected static AbstractModel load(ResultSet resultSet) throws SQLException {
         UUID idLocatie = UUID.fromString(resultSet.getString(1));
         String denumire = resultSet.getString(2);
         int capacitate = resultSet.getInt(3);
