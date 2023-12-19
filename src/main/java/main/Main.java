@@ -25,6 +25,7 @@ public class Main {
             EvenimentFactory factory;
             factory = new BotezFactory();
             factory = new ConcertFactory();
+            factory = new NuntaFactory();
 
             EvenimentCuTematica evenimentCuTematica = factory.createEvenimentCuTematica(contract.getId(), locatie.getId(), DateUtil.today(), 100);
             EvenimentFaraTematica evenimentFaraTematica = factory.createEvenimentFaraTematica(contract.getId(), locatie.getId(), DateUtil.today(), 100);
