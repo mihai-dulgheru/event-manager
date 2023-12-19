@@ -20,10 +20,10 @@ public class Application {
         Database.populate();
         UUID uuid = autentificare();
         if (uuid != null) {
-            CategorieEveniment categorieEveniment = alegeCategorieEveniment();
             TipEveniment tipEveniment = alegeTipEveniment();
-            System.out.println(categorieEveniment);
             System.out.println(tipEveniment);
+            CategorieEveniment categorieEveniment = alegeCategorieEveniment();
+            System.out.println(categorieEveniment);
             // TODO: adaugă abstract factory
         }
         Database.disconnect();
