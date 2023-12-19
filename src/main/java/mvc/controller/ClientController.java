@@ -1,7 +1,7 @@
 package mvc.controller;
 
+import designPatterns.proxy.Client;
 import interfaces.ViewUpdater;
-import mvc.model.Client;
 import mvc.view.ClientView;
 
 public class ClientController implements ViewUpdater {

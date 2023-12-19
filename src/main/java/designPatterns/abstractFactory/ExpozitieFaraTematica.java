@@ -4,7 +4,7 @@ import enums.TipEveniment;
 
 import java.util.UUID;
 
-public class ExpozitieFaraTematica extends EvenimentFaraTematica{
+public class ExpozitieFaraTematica extends EvenimentFaraTematica {
     public ExpozitieFaraTematica(UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti) {
         super(idContract, idLocatie, TipEveniment.EXPOZITIE, dataEveniment, nrParticipanti);
     }

@@ -1,4 +1,4 @@
-package mvc.model;
+package designPatterns.proxy;
 
 import abstractClasses.AbstractModel;
 import database.Database;
@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Active Record
  */
-public class Client extends AbstractModel {
+public class Client extends AbstractModel implements IAccountCreation {
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS clienti" +
@@ -44,8 +44,12 @@ public class Client extends AbstractModel {
     // TODO: hash-uire parolă
     private String parola;
 
-    public Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
+    protected Client() {
         this.id = UUID.randomUUID();
+    }
+
+    private Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
+        this();
         this.numeClient = numeClient;
         this.prenumeClient = prenumeClient;
         this.cnp = cnp;
@@ -250,5 +254,10 @@ public class Client extends AbstractModel {
                 ", username='" + username + '\'' +
                 ", parola='" + parola + '\'' +
                 '}';
+    }
+
+    @Override
+    public Client createAccount(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
+        return new Client(numeClient, prenumeClient, cnp, adresa, email, telefon, username, parola);
     }
 }

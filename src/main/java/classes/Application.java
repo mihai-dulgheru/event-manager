@@ -1,9 +1,9 @@
 package classes;
 
 import database.Database;
+import designPatterns.proxy.Client;
 import enums.CategorieEveniment;
 import enums.TipEveniment;
-import mvc.model.Client;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -17,14 +17,13 @@ public class Application {
 
     public static void start() {
         Database.connect();
-        Database.populate();
+//        Database.populate();
         UUID uuid = autentificare();
         if (uuid != null) {
             TipEveniment tipEveniment = alegeTipEveniment();
             System.out.println(tipEveniment);
             CategorieEveniment categorieEveniment = alegeCategorieEveniment();
             System.out.println(categorieEveniment);
-            // TODO: adaugă abstract factory
         }
         Database.disconnect();
     }
