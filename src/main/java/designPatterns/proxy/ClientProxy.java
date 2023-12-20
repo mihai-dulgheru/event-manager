@@ -2,6 +2,8 @@ package designPatterns.proxy;
 
 import exceptions.ClientAgeException;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -33,7 +35,7 @@ public class ClientProxy implements IAccountCreation {
     }
 
     @Override
-    public Client createAccount(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) throws ClientAgeException {
+    public Client createAccount(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) throws ClientAgeException, NoSuchAlgorithmException, InvalidKeySpecException {
         if (!isClientMajor(cnp)) {
             throw new ClientAgeException("Clientul nu are vârsta necesară pentru a crea un cont!");
         }

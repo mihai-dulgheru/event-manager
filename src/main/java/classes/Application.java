@@ -4,7 +4,10 @@ import database.Database;
 import designPatterns.proxy.Client;
 import enums.CategorieEveniment;
 import enums.TipEveniment;
+import util.PasswordUtil;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
@@ -17,33 +20,39 @@ public class Application {
 
     public static void start() {
         Database.connect();
-//        Database.populate();
         UUID uuid = autentificare();
+        System.out.println(uuid);
+        /*
         if (uuid != null) {
             TipEveniment tipEveniment = alegeTipEveniment();
             System.out.println(tipEveniment);
             CategorieEveniment categorieEveniment = alegeCategorieEveniment();
             System.out.println(categorieEveniment);
         }
+         */
         Database.disconnect();
     }
 
     private static UUID autentificare() {
-        System.out.println("Introduceți username-ul: ");
-        String username = SCANNER.nextLine();
-        System.out.println("Introduceți parola: ");
-        String parola = SCANNER.nextLine();
-        Client client = Client.findByUsername(username);
-        if (client == null) {
-            System.out.println("Autentificare eșuată!");
-            return null;
-        }
-        if (client.getParola().equals(parola)) {
-            System.out.println("Autentificare reușită!");
-            return client.getId();
-        } else {
-            System.out.println("Autentificare eșuată!");
-            return null;
+        try {
+            System.out.println("Introduceți username-ul: ");
+            String username = SCANNER.nextLine();
+            System.out.println("Introduceți parola: ");
+            String parola = SCANNER.nextLine();
+            Client client = Client.findByUsername(username);
+            if (client == null) {
+                System.out.println("Autentificare eșuată!");
+                return null;
+            }
+            if (PasswordUtil.checkPassword(parola, client.getParola())) {
+                System.out.println("Autentificare reușită!");
+                return client.getId();
+            } else {
+                System.out.println("Autentificare eșuată!");
+                return null;
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
         }
     }
 

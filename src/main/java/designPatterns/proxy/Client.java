@@ -2,7 +2,10 @@ package designPatterns.proxy;
 
 import abstractClasses.AbstractModel;
 import database.Database;
+import util.PasswordUtil;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,14 +44,13 @@ public class Client extends AbstractModel implements IAccountCreation {
     private String email;
     private String telefon;
     private String username;
-    // TODO: hash-uire parolă
     private String parola;
 
     protected Client() {
         this.id = UUID.randomUUID();
     }
 
-    private Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
+    private Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) throws NoSuchAlgorithmException, InvalidKeySpecException {
         this();
         this.numeClient = numeClient;
         this.prenumeClient = prenumeClient;
@@ -57,7 +59,7 @@ public class Client extends AbstractModel implements IAccountCreation {
         this.email = email;
         this.telefon = telefon;
         this.username = username;
-        this.parola = parola;
+        this.parola = PasswordUtil.hashPassword(parola);
     }
 
     private Client(UUID id, String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
@@ -238,7 +240,11 @@ public class Client extends AbstractModel implements IAccountCreation {
     }
 
     public void setParola(String parola) {
-        this.parola = parola;
+        try {
+            this.parola = PasswordUtil.hashPassword(parola);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -257,7 +263,7 @@ public class Client extends AbstractModel implements IAccountCreation {
     }
 
     @Override
-    public Client createAccount(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
+    public Client createAccount(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) throws NoSuchAlgorithmException, InvalidKeySpecException {
         return new Client(numeClient, prenumeClient, cnp, adresa, email, telefon, username, parola);
     }
 }
