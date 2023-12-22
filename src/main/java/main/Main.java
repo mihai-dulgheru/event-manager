@@ -1,21 +1,15 @@
 package main;
 
-import abstractClasses.AbstractModel;
 import classes.Application;
 import database.Database;
-import designPatterns.abstractFactory.*;
-import designPatterns.proxy.Client;
+import designPatterns.builder.Computer;
+import mvc.model.Client;
 import designPatterns.proxy.ClientProxy;
 import designPatterns.proxy.IAccountCreation;
 import exceptions.ClientAgeException;
-import mvc.model.Contract;
-import mvc.model.Locatie;
-import util.DateUtil;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.SQLException;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {

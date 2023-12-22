@@ -43,10 +43,14 @@ public class Contract extends AbstractModel {
     private String observatii;
     private MetodaDePlata metodaDePlata;
 
-    public Contract(UUID idClient, Double costTotal, Moneda moneda, String observatii, MetodaDePlata metodaDePlata) {
+    public Contract(UUID idClient) {
         this.id = UUID.randomUUID();
         this.idClient = idClient;
         this.dataIncheiere = DateUtil.today();
+    }
+
+    public Contract(UUID idClient, Double costTotal, Moneda moneda, String observatii, MetodaDePlata metodaDePlata) {
+        this(idClient);
         this.costTotal = costTotal;
         this.moneda = moneda;
         this.observatii = observatii;

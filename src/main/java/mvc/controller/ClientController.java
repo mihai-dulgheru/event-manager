@@ -1,35 +1,25 @@
 package mvc.controller;
 
-import designPatterns.proxy.Client;
 import interfaces.ViewUpdater;
+import mvc.model.Client;
 import mvc.view.ClientView;
 
+import java.util.UUID;
+
 public class ClientController implements ViewUpdater {
-    private Client client;
-    private ClientView view;
+    private final Client model;
+    private final ClientView view;
 
-    public ClientController(Client client, ClientView view) {
-        this.client = client;
+    public ClientController(Client model, ClientView view) {
+        this.model = model;
         this.view = view;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public ClientView getView() {
-        return view;
-    }
-
-    public void setView(ClientView view) {
-        this.view = view;
+    public UUID getIdClient() {
+        return this.model.getId();
     }
 
     public void updateView() {
-        view.print(client);
+        view.print(model);
     }
 }

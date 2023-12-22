@@ -4,32 +4,26 @@ import interfaces.ViewUpdater;
 import mvc.model.Locatie;
 import mvc.view.LocatieView;
 
+import java.util.UUID;
+
 public class LocatieController implements ViewUpdater {
-    private Locatie locatie;
-    private LocatieView view;
+    private final Locatie model;
+    private final LocatieView view;
 
-    public LocatieController(Locatie locatie, LocatieView view) {
-        this.locatie = locatie;
+    public LocatieController(Locatie model, LocatieView view) {
+        this.model = model;
         this.view = view;
     }
 
-    public Locatie getLocatie() {
-        return locatie;
+    public UUID getIdLocatie() {
+        return this.model.getId();
     }
 
-    public void setLocatie(Locatie locatie) {
-        this.locatie = locatie;
-    }
-
-    public LocatieView getView() {
-        return view;
-    }
-
-    public void setView(LocatieView view) {
-        this.view = view;
+    public Integer getCapacitateLocatie() {
+        return this.model.getCapacitate();
     }
 
     public void updateView() {
-        view.print(locatie);
+        view.print(model);
     }
 }

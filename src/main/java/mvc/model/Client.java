@@ -1,7 +1,8 @@
-package designPatterns.proxy;
+package mvc.model;
 
 import abstractClasses.AbstractModel;
 import database.Database;
+import designPatterns.proxy.IAccountCreation;
 import util.PasswordUtil;
 
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +47,7 @@ public class Client extends AbstractModel implements IAccountCreation {
     private String username;
     private String parola;
 
-    protected Client() {
+    public Client() {
         this.id = UUID.randomUUID();
     }
 

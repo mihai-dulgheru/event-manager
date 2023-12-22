@@ -72,6 +72,25 @@ public class Locatie extends AbstractModel {
         return new Locatie(idLocatie, denumire, capacitate);
     }
 
+    public static List<Locatie> findByDataEveniment(String dataEveniment) throws SQLException {
+        String selectString = "SELECT * FROM locatii WHERE id_locatie NOT IN (SELECT id_locatie FROM evenimente WHERE data_eveniment = ?)";
+        PreparedStatement preparedStatement = Database.connection.prepareStatement(selectString);
+
+        preparedStatement.setString(1, dataEveniment);
+
+        ResultSet rs = preparedStatement.executeQuery();
+        List<Locatie> locatii = new ArrayList<>();
+        while (rs.next()) {
+            UUID idLocatie = UUID.fromString(rs.getString(1));
+            String denumire = rs.getString(2);
+            int capacitate = rs.getInt(3);
+
+            locatii.add(new Locatie(idLocatie, denumire, capacitate));
+        }
+
+        return locatii;
+    }
+
     @Override
     public void insert() throws SQLException {
         String insertString = "INSERT INTO locatii VALUES (?, ?, ?)";

@@ -5,31 +5,15 @@ import mvc.model.Eveniment;
 import mvc.view.EvenimentView;
 
 public class EvenimentController implements ViewUpdater {
-    private Eveniment eveniment;
-    private EvenimentView view;
+    private final Eveniment model;
+    private final EvenimentView view;
 
-    public EvenimentController(Eveniment eveniment, EvenimentView view) {
-        this.eveniment = eveniment;
-        this.view = view;
-    }
-
-    public Eveniment getEveniment() {
-        return eveniment;
-    }
-
-    public void setEveniment(Eveniment eveniment) {
-        this.eveniment = eveniment;
-    }
-
-    public EvenimentView getView() {
-        return view;
-    }
-
-    public void setView(EvenimentView view) {
+    public EvenimentController(Eveniment model, EvenimentView view) {
+        this.model = model;
         this.view = view;
     }
 
     public void updateView() {
-        view.print(eveniment);
+        view.print(model);
     }
 }

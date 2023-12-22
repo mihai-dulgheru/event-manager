@@ -4,32 +4,22 @@ import interfaces.ViewUpdater;
 import mvc.model.Contract;
 import mvc.view.ContractView;
 
+import java.util.UUID;
+
 public class ContractController implements ViewUpdater {
-    private Contract contract;
-    private ContractView view;
+    private final Contract model;
+    private final ContractView view;
 
-    public ContractController(Contract contract, ContractView view) {
-        this.contract = contract;
+    public ContractController(Contract model, ContractView view) {
+        this.model = model;
         this.view = view;
     }
 
-    public Contract getContract() {
-        return contract;
-    }
-
-    public void setContract(Contract contract) {
-        this.contract = contract;
-    }
-
-    public ContractView getView() {
-        return view;
-    }
-
-    public void setView(ContractView view) {
-        this.view = view;
+    public UUID getIdContract() {
+        return this.model.getId();
     }
 
     public void updateView() {
-        view.print(contract);
+        view.print(model);
     }
 }

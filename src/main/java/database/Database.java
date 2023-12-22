@@ -1,6 +1,6 @@
 package database;
 
-import designPatterns.proxy.Client;
+import mvc.model.Client;
 import designPatterns.proxy.ClientProxy;
 import designPatterns.proxy.IAccountCreation;
 import enums.MetodaDePlata;

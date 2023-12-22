@@ -1,6 +1,7 @@
 package designPatterns.proxy;
 
 import exceptions.ClientAgeException;
+import mvc.model.Client;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;

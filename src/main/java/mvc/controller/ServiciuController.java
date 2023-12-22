@@ -5,31 +5,15 @@ import mvc.model.Serviciu;
 import mvc.view.ServiciuView;
 
 public class ServiciuController implements ViewUpdater {
-    private Serviciu serviciu;
-    private ServiciuView view;
+    private final Serviciu model;
+    private final ServiciuView view;
 
-    public ServiciuController(Serviciu serviciu, ServiciuView view) {
-        this.serviciu = serviciu;
-        this.view = view;
-    }
-
-    public Serviciu getServiciu() {
-        return serviciu;
-    }
-
-    public void setServiciu(Serviciu serviciu) {
-        this.serviciu = serviciu;
-    }
-
-    public ServiciuView getView() {
-        return view;
-    }
-
-    public void setView(ServiciuView view) {
+    public ServiciuController(Serviciu model, ServiciuView view) {
+        this.model = model;
         this.view = view;
     }
 
     public void updateView() {
-        view.print(serviciu);
+        view.print(model);
     }
 }
