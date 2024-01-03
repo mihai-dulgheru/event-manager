@@ -1,6 +1,5 @@
 package database;
 
-import mvc.model.Client;
 import designPatterns.proxy.ClientProxy;
 import designPatterns.proxy.IAccountCreation;
 import enums.MetodaDePlata;
@@ -83,26 +82,28 @@ public final class Database {
                 eveniment.insert();
             }
 
-            Pachet[] packets = {
-                    new Pachet(events[0].getId(), "Nume pachet 1", "Detalii pachet 1"),
-                    new Pachet(events[1].getId(), "Nume pachet 2", "Detalii pachet 2"),
-                    new Pachet(events[2].getId(), "Nume pachet 3", "Detalii pachet 3"),
-                    new Pachet(events[3].getId(), "Nume pachet 4", "Detalii pachet 4"),
-                    new Pachet(events[4].getId(), "Nume pachet 5", "Detalii pachet 5"),};
-
-            for (Pachet pachet : packets) {
-                pachet.insert();
-            }
-
             Serviciu[] servicii = {
-                    new Serviciu(packets[0].getId(), "Nume serviciu 1", 100.99f, 1f, "Detalii serviciu 1"),
-                    new Serviciu(packets[1].getId(), "Nume serviciu 2", 200.99f, 2f, "Detalii serviciu 2"),
-                    new Serviciu(packets[2].getId(), "Nume serviciu 3", 300.99f, 3f, "Detalii serviciu 3"),
-                    new Serviciu(packets[3].getId(), "Nume serviciu 4", 400.99f, 4f, "Detalii serviciu 4"),
-                    new Serviciu(packets[4].getId(), "Nume serviciu 5", 500.99f, 5f, "Detalii serviciu 5"),};
+                    new Serviciu("Nume serviciu de bază 1", 100f, 1f, "Detalii serviciu de bază 1", "DEFAULT"),
+                    new Serviciu("Nume serviciu de bază 2", 200f, 2f, "Detalii serviciu de bază 2", "DEFAULT"),
+                    new Serviciu("Nume serviciu 1", 100f, 1f, "Detalii serviciu 1", TipEveniment.BOTEZ.toString()),
+                    new Serviciu("Nume serviciu 2", 200f, 2f, "Detalii serviciu 2", TipEveniment.CONCERT.toString()),
+                    new Serviciu("Nume serviciu 3", 300f, 3f, "Detalii serviciu 3", TipEveniment.EXPOZITIE.toString()),
+                    new Serviciu("Nume serviciu 4", 400f, 4f, "Detalii serviciu 4", TipEveniment.NUNTA.toString()),
+                    new Serviciu("Nume serviciu 5", 500f, 5f, "Detalii serviciu 5", TipEveniment.PETRECERE_ABSOLVIRE.toString()),};
 
             for (Serviciu serviciu : servicii) {
                 serviciu.insert();
+            }
+
+            Pachet[] packets = {
+                    new Pachet.PachetBuilder(events[0].getId()).addServiciu(servicii[2]).build(),
+                    new Pachet.PachetBuilder(events[1].getId()).addServiciu(servicii[3]).build(),
+                    new Pachet.PachetBuilder(events[2].getId()).addServiciu(servicii[4]).build(),
+                    new Pachet.PachetBuilder(events[3].getId()).addServiciu(servicii[5]).build(),
+                    new Pachet.PachetBuilder(events[4].getId()).addServiciu(servicii[6]).build(),};
+
+            for (Pachet pachet : packets) {
+                pachet.insert();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

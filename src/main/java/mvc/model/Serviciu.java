@@ -19,12 +19,11 @@ public class Serviciu extends AbstractModel {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS servicii" +
                     "(" +
                     "    id_serviciu   VARCHAR(36) PRIMARY KEY," +
-                    "    id_pachet     VARCHAR(36)  NOT NULL," +
                     "    nume_serviciu VARCHAR(255) NOT NULL," +
                     "    cost_serviciu REAL(255) NOT NULL," +
                     "    durata        REAL(255)," +
                     "    observatii    VARCHAR(255) NOT NULL," +
-                    "    FOREIGN KEY (id_pachet) REFERENCES pachete (id_pachet)" +
+                    "    tip_eveniment VARCHAR(255) NOT NULL" +
                     ")");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -32,15 +31,14 @@ public class Serviciu extends AbstractModel {
     }
 
     private final UUID id;
-    private final UUID idPachet;
     private String numeServiciu;
     private Float costServiciu;
     private Float durata;
     private String observatii;
+    private String tipEveniment;
 
-    public Serviciu(UUID idPachet, String numeServiciu, Float costServiciu, Float durata, String observatii) {
+    public Serviciu(String numeServiciu, Float costServiciu, Float durata, String observatii, String tipEveniment) {
         this.id = UUID.randomUUID();
-        this.idPachet = idPachet;
         this.numeServiciu = numeServiciu;
         this.costServiciu = costServiciu;
         if (durata != null && durata > 0) {
@@ -49,24 +47,16 @@ public class Serviciu extends AbstractModel {
             throw new IllegalArgumentException("Durata nu este valida!");
         }
         this.observatii = observatii;
+        this.tipEveniment = tipEveniment;
     }
 
-    public Serviciu(UUID idPachet, String numeServiciu, Float costServiciu, String observatii) {
-        this.id = UUID.randomUUID();
-        this.idPachet = idPachet;
-        this.numeServiciu = numeServiciu;
-        this.costServiciu = costServiciu;
-        this.durata = null;
-        this.observatii = observatii;
-    }
-
-    private Serviciu(UUID id, UUID idPachet, String numeServiciu, Float costServiciu, Float durata, String observatii) {
+    private Serviciu(UUID id, String numeServiciu, Float costServiciu, Float durata, String observatii, String tipEveniment) {
         this.id = id;
-        this.idPachet = idPachet;
         this.numeServiciu = numeServiciu;
         this.costServiciu = costServiciu;
         this.durata = durata;
         this.observatii = observatii;
+        this.tipEveniment = tipEveniment;
     }
 
     public static AbstractModel readOne(UUID id) throws SQLException {
@@ -92,14 +82,14 @@ public class Serviciu extends AbstractModel {
 
     protected static AbstractModel load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
-        UUID idPachet = UUID.fromString(resultSet.getString(2));
-        String numeServiciu = resultSet.getString(3);
-        Float costServiciu = resultSet.getFloat(4);
-        Float durata = resultSet.getFloat(5);
-        String observatii = resultSet.getString(6);
+        String numeServiciu = resultSet.getString(2);
+        Float costServiciu = resultSet.getFloat(3);
+        Float durata = resultSet.getFloat(4);
+        String observatii = resultSet.getString(5);
+        String tipEveniment = resultSet.getString(6);
 
 
-        return new Serviciu(id, idPachet, numeServiciu, costServiciu, durata, observatii);
+        return new Serviciu(id, numeServiciu, costServiciu, durata, observatii, tipEveniment);
     }
 
     @Override
@@ -108,15 +98,15 @@ public class Serviciu extends AbstractModel {
         PreparedStatement insertService = Database.connection.prepareStatement(insertString);
 
         insertService.setString(1, this.id.toString());
-        insertService.setString(2, this.idPachet.toString());
-        insertService.setString(3, this.numeServiciu);
-        insertService.setFloat(4, this.costServiciu);
+        insertService.setString(2, this.numeServiciu);
+        insertService.setFloat(3, this.costServiciu);
         if (this.durata != null) {
-            insertService.setFloat(5, this.durata);
+            insertService.setFloat(4, this.durata);
         } else {
-            insertService.setObject(5, null);
+            insertService.setObject(4, null);
         }
-        insertService.setString(6, this.observatii);
+        insertService.setString(5, this.observatii);
+        insertService.setString(6, this.tipEveniment);
 
         insertService.executeUpdate();
         System.out.println("1 row affected");
@@ -124,20 +114,20 @@ public class Serviciu extends AbstractModel {
 
     @Override
     public void update() throws SQLException {
-        String updateString = "UPDATE servicii SET id_pachet = ?, nume_serviciu = ?, cost_serviciu = ?, durata = ?, observatii = ? WHERE id_serviciu = ?";
+        String updateString = "UPDATE servicii SET nume_serviciu = ?, cost_serviciu = ?, durata = ?, observatii = ?, tip_eveniment = ? WHERE id_serviciu = ?";
         PreparedStatement updateService = Database.connection.prepareStatement(updateString);
 
-        updateService.setString(1, this.idPachet.toString());
-        updateService.setString(2, this.numeServiciu);
-        updateService.setFloat(3, this.costServiciu);
+        updateService.setString(1, this.numeServiciu);
+        updateService.setFloat(2, this.costServiciu);
 
         if (this.durata != null) {
-            updateService.setFloat(4, this.durata);
+            updateService.setFloat(3, this.durata);
         } else {
-            updateService.setObject(4, null);
+            updateService.setObject(3, null);
         }
 
-        updateService.setString(5, this.observatii);
+        updateService.setString(4, this.observatii);
+        updateService.setString(5, this.tipEveniment);
         updateService.setString(6, this.id.toString());
 
         updateService.executeUpdate();
@@ -156,16 +146,8 @@ public class Serviciu extends AbstractModel {
         System.out.println("1 row affected");
     }
 
-    public Float simplifyNullable(Float nullableFloat) {
-        return nullableFloat;
-    }
-
     public UUID getId() {
         return id;
-    }
-
-    public UUID getIdPachet() {
-        return idPachet;
     }
 
     public String getNumeServiciu() {
@@ -189,11 +171,7 @@ public class Serviciu extends AbstractModel {
     }
 
     public void setDurata(Float durata) {
-        if (durata != null && durata > 0) {
-            this.durata = durata;
-        } else {
-            throw new IllegalArgumentException("Durata nu este valida!");
-        }
+        this.durata = durata;
     }
 
     public String getObservatii() {
@@ -204,15 +182,39 @@ public class Serviciu extends AbstractModel {
         this.observatii = observatii;
     }
 
+    public String getTipEveniment() {
+        return tipEveniment;
+    }
+
+    public void setTipEveniment(String tipEveniment) {
+        this.tipEveniment = tipEveniment;
+    }
+
     @Override
     public String toString() {
         return "Serviciu{" +
                 "id=" + id +
-                ", idPachet=" + idPachet +
                 ", numeServiciu='" + numeServiciu + '\'' +
                 ", costServiciu=" + costServiciu +
                 ", durata=" + durata +
                 ", observatii='" + observatii + '\'' +
+                ", tipEveniment='" + tipEveniment + '\'' +
                 '}';
+    }
+
+    public String print() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.numeServiciu);
+        stringBuilder.append(": ");
+        stringBuilder.append(this.costServiciu);
+        stringBuilder.append(" RON | ");
+        stringBuilder.append(this.durata);
+        stringBuilder.append("h");
+        if (this.observatii != null && !this.observatii.isEmpty() && !this.observatii.isBlank()) {
+            stringBuilder.append(" (");
+            stringBuilder.append(this.observatii);
+            stringBuilder.append(")");
+        }
+        return stringBuilder.toString();
     }
 }

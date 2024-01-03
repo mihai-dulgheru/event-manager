@@ -30,22 +30,39 @@ public class Pachet extends AbstractModel {
     }
 
     private final UUID id;
-    private UUID idEveniment;
+    private List<Serviciu> servicii;
     private String numePachet;
     private String detaliiPachet;
-
-    public Pachet(UUID idEveniment, String numePachet, String detaliiPachet) {
-        this.id = UUID.randomUUID();
-        this.idEveniment = idEveniment;
-        this.numePachet = numePachet;
-        this.detaliiPachet = detaliiPachet;
-    }
+    private UUID idEveniment;
 
     private Pachet(UUID id, UUID idEveniment, String numePachet, String detaliiPachet) {
         this.id = id;
         this.idEveniment = idEveniment;
         this.numePachet = numePachet;
         this.detaliiPachet = detaliiPachet;
+//        TODO: citește serviciile din baza de date
+//        try {
+//            List<AbstractModel> servicii = Serviciu.readMany();
+//            for (AbstractModel abstractModel:servicii) {
+//                Serviciu serviciu = (Serviciu) abstractModel;
+//                if (serviciu.getTipEveniment().equalsIgnoreCase("DEFAULT")) {
+//                    this.serviciiDefault.add(serviciu);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+    }
+
+    public Pachet(PachetBuilder pachetBuilder) {
+        super();
+        this.id = UUID.randomUUID();
+        this.idEveniment = pachetBuilder.idEveniment;
+        this.numePachet = pachetBuilder.numePachet;
+        this.detaliiPachet = pachetBuilder.detaliiPachet;
+        this.servicii = new ArrayList<>();
+        this.servicii.addAll(pachetBuilder.serviciiDefault);
+        this.servicii.addAll(pachetBuilder.serviciiSuplimentare);
     }
 
     public static AbstractModel readOne(UUID id) throws SQLException {
@@ -121,12 +138,12 @@ public class Pachet extends AbstractModel {
         return id;
     }
 
-    public UUID getIdEveniment() {
-        return idEveniment;
+    public List<Serviciu> getServicii() {
+        return servicii;
     }
 
-    public void setIdEveniment(UUID idEveniment) {
-        this.idEveniment = idEveniment;
+    public void setServicii(List<Serviciu> servicii) {
+        this.servicii = servicii;
     }
 
     public String getNumePachet() {
@@ -145,13 +162,77 @@ public class Pachet extends AbstractModel {
         this.detaliiPachet = detaliiPachet;
     }
 
+    public UUID getIdEveniment() {
+        return idEveniment;
+    }
+
+    public void setIdEveniment(UUID idEveniment) {
+        this.idEveniment = idEveniment;
+    }
+
     @Override
     public String toString() {
         return "Pachet{" +
                 "id=" + id +
-                ", idEveniment=" + idEveniment +
+                ", servicii=" + servicii +
                 ", numePachet='" + numePachet + '\'' +
                 ", detaliiPachet='" + detaliiPachet + '\'' +
+                ", idEveniment=" + idEveniment +
                 '}';
+    }
+
+    public static class PachetBuilder {
+        private final UUID idEveniment;
+        private final List<Serviciu> serviciiDefault = new ArrayList<>();
+        private final List<Serviciu> serviciiSuplimentare = new ArrayList<>();
+        private String numePachet;
+        private String detaliiPachet;
+
+        public PachetBuilder(UUID idEveniment) {
+            this.idEveniment = idEveniment;
+            try {
+                List<AbstractModel> servicii = Serviciu.readMany();
+                for (AbstractModel abstractModel : servicii) {
+                    Serviciu serviciu = (Serviciu) abstractModel;
+                    if (serviciu.getTipEveniment().equalsIgnoreCase("DEFAULT")) {
+                        this.serviciiDefault.add(serviciu);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public PachetBuilder addServiciu(Serviciu serviciu) {
+            this.serviciiSuplimentare.add(serviciu);
+            return this;
+        }
+
+        public Pachet build() {
+            try {
+                Eveniment eveniment = (Eveniment) Eveniment.readOne(this.idEveniment);
+                boolean isBasic = this.serviciiSuplimentare.isEmpty();
+                this.numePachet = String.format("pachet_%s_%s", eveniment.getTipEveniment().toString().toLowerCase(), isBasic ? "basic" : "custom");
+                if (isBasic) {
+                    this.detaliiPachet = "";
+                } else {
+                    StringBuilder stringBuilder = new StringBuilder("Pachetul conține serviciile ");
+                    float total = 0.0f;
+                    for (Serviciu serviciu : this.serviciiDefault) {
+                        stringBuilder.append(serviciu.getNumeServiciu()).append(", ");
+                        total += serviciu.getCostServiciu();
+                    }
+                    for (Serviciu serviciu : this.serviciiSuplimentare) {
+                        stringBuilder.append(serviciu.getNumeServiciu()).append(", ");
+                        total += serviciu.getCostServiciu();
+                    }
+                    stringBuilder.append("în valoare de ").append(total).append(" RON.");
+                    this.detaliiPachet = stringBuilder.toString();
+                }
+                return new Pachet(this);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
