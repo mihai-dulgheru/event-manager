@@ -1,8 +1,10 @@
 package designPatterns.singleton;
 
+import abstractClasses.AbstractModel;
 import enums.TipEveniment;
 import mvc.model.Serviciu;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class CatalogServicii {
@@ -10,12 +12,26 @@ public class CatalogServicii {
     private final Map<TipEveniment, List<Serviciu>> catalog;
 
     private CatalogServicii() {
-        // TODO: citește valorile din baza de date populată în metoda `Database.populate()`
-        this.catalog = HashMap.newHashMap(1);
-        Serviciu serviciu1 = new Serviciu("Serviciu 1", 100.0f, 1.5f, "Observații", TipEveniment.BOTEZ.toString());
-        List<Serviciu> servicii = new ArrayList<>();
-        servicii.add(serviciu1);
-        catalog.put(TipEveniment.BOTEZ, servicii);
+        try {
+            List<AbstractModel> list = Serviciu.readMany();
+            this.catalog = new HashMap<>();
+            for (AbstractModel abstractModel : list) {
+                Serviciu serviciu = (Serviciu) abstractModel;
+                if (serviciu.getTipEveniment() == null || serviciu.getTipEveniment().isEmpty() || serviciu.getTipEveniment().equals("DEFAULT")) {
+                    continue;
+                }
+                TipEveniment tipEveniment = TipEveniment.valueOf(serviciu.getTipEveniment());
+                if (this.catalog.containsKey(tipEveniment)) {
+                    this.catalog.get(tipEveniment).add(serviciu);
+                } else {
+                    List<Serviciu> servicii = new ArrayList<>();
+                    servicii.add(serviciu);
+                    this.catalog.put(tipEveniment, servicii);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static CatalogServicii getInstance() {
@@ -47,5 +63,9 @@ public class CatalogServicii {
             serviciiList.add(this.catalog.get(tipEveniment).get(Integer.parseInt(serviciuId.trim()) - 1));
         }
         return serviciiList;
+    }
+
+    public List<TipEveniment> getTipEvenimentList() {
+        return new ArrayList<>(this.catalog.keySet());
     }
 }
