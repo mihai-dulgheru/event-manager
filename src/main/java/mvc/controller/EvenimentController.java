@@ -4,6 +4,8 @@ import interfaces.ViewUpdater;
 import mvc.model.Eveniment;
 import mvc.view.EvenimentView;
 
+import java.util.UUID;
+
 public class EvenimentController implements ViewUpdater {
     private final Eveniment model;
     private final EvenimentView view;
@@ -15,5 +17,9 @@ public class EvenimentController implements ViewUpdater {
 
     public void updateView() {
         view.print(model);
+    }
+
+    public UUID getIdEveniment() {
+        return this.model.getId();
     }
 }

@@ -16,4 +16,8 @@ public class PachetController implements ViewUpdater {
     public void updateView() {
         view.print(model);
     }
+
+    public Pachet getPachet() {
+        return this.model;
+    }
 }

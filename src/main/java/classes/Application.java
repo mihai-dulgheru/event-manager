@@ -3,19 +3,11 @@ package classes;
 import database.Database;
 import designPatterns.abstractFactory.*;
 import enums.CategorieEveniment;
+import enums.MetodaDePlata;
 import enums.TipEveniment;
-import mvc.controller.ClientController;
-import mvc.controller.ContractController;
-import mvc.controller.EvenimentController;
-import mvc.controller.LocatieController;
-import mvc.model.Client;
-import mvc.model.Contract;
-import mvc.model.Eveniment;
-import mvc.model.Locatie;
-import mvc.view.ClientView;
-import mvc.view.ContractView;
-import mvc.view.EvenimentView;
-import mvc.view.LocatieView;
+import mvc.controller.*;
+import mvc.model.*;
+import mvc.view.*;
 import util.DateUtil;
 import util.PasswordUtil;
 
@@ -34,32 +26,46 @@ public class Application {
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void start() {
-        Database.connect();
+        try {
+            Database.connect();
 
-        Client client = autentificare();
-        ClientView clientView = new ClientView();
-        ClientController clientController = new ClientController(client, clientView);
+            Client client = autentificare();
+            ClientView clientView = new ClientView();
+            ClientController clientController = new ClientController(client, clientView);
 
-        Contract contract = new Contract(clientController.getIdClient());
-        ContractView contractView = new ContractView();
-        ContractController contractController = new ContractController(contract, contractView);
+            Contract contract = new Contract(clientController.getIdClient());
+            ContractView contractView = new ContractView();
+            ContractController contractController = new ContractController(contract, contractView);
 
-        TipEveniment tipEveniment = alegeTipEveniment();
-        CategorieEveniment categorieEveniment = alegeCategorieEveniment();
-        String dataEveniment = alegeDataEveniment();
+            TipEveniment tipEveniment = alegeTipEveniment();
+            CategorieEveniment categorieEveniment = alegeCategorieEveniment();
+            String dataEveniment = alegeDataEveniment();
 
-        Locatie locatie = alegeLocatie(dataEveniment);
-        LocatieView locatieView = new LocatieView();
-        LocatieController locatieController = new LocatieController(locatie, locatieView);
+            Locatie locatie = alegeLocatie(dataEveniment);
+            LocatieView locatieView = new LocatieView();
+            LocatieController locatieController = new LocatieController(locatie, locatieView);
 
-        Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
+            Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
 
-        Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti);
-        EvenimentView evenimentView = new EvenimentView();
-        EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
-        evenimentController.updateView();
+            Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti);
+            EvenimentView evenimentView = new EvenimentView();
+            EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
 
-        Database.disconnect();
+            Pachet pachet = alegePachet(evenimentController.getIdEveniment());
+            PachetView pachetView = new PachetView();
+            PachetController pachetController = new PachetController(pachet, pachetView);
+
+            String dataIncheiere = DateUtil.today();
+            String observatii = adaugaObservatii();
+            MetodaDePlata metodaDePlata = alegeMetodaDePlata();
+            contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
+            contractController.updateView();
+        } catch (Exception e) {
+            System.out.println("Eroare: " + e.getMessage());
+        } finally {
+            Database.disconnect();
+            SCANNER.close();
+        }
     }
 
     private static Client autentificare() {
@@ -199,5 +205,21 @@ public class Application {
             case CategorieEveniment.FARA_TEMATICA ->
                     factory.createEvenimentFaraTematica(idContract, idLocatie, dataEveniment, nrParticipanti);
         };
+    }
+
+    private static Pachet alegePachet(UUID idEveniment) {
+        // TODO: afișează la consolă toate serviciile disponibile în funcție de tipul evenimentului
+        // TODO: citește, serviciile alese de user, parsează indecși și creează obiectul de tip Pachet folosind PachetBuilder
+        return null;
+    }
+
+    private static String adaugaObservatii() {
+        // TODO: afișează un prompter, citește toate liniile introduse de user, concatenează-le și returnează-le
+        return "";
+    }
+
+    private static MetodaDePlata alegeMetodaDePlata() {
+        // TODO: afișează la consolă toate metodele de plată disponibile, citește index-ul metodei alese și returnează metoda de plată
+        return MetodaDePlata.CARD;
     }
 }

@@ -1,7 +1,9 @@
 package mvc.controller;
 
+import enums.MetodaDePlata;
 import interfaces.ViewUpdater;
 import mvc.model.Contract;
+import mvc.model.Pachet;
 import mvc.view.ContractView;
 
 import java.util.UUID;
@@ -21,5 +23,8 @@ public class ContractController implements ViewUpdater {
 
     public void updateView() {
         view.print(model);
+    }
+
+    public void updateContract(String dataIncheiere, Pachet pachet, String observatii, MetodaDePlata metodaDePlata) {
     }
 }
