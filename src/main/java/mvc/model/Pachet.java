@@ -40,18 +40,16 @@ public class Pachet extends AbstractModel {
         this.idEveniment = idEveniment;
         this.numePachet = numePachet;
         this.detaliiPachet = detaliiPachet;
-//        TODO: citește serviciile din baza de date
-//        try {
-//            List<AbstractModel> servicii = Serviciu.readMany();
-//            for (AbstractModel abstractModel:servicii) {
-//                Serviciu serviciu = (Serviciu) abstractModel;
-//                if (serviciu.getTipEveniment().equalsIgnoreCase("DEFAULT")) {
-//                    this.serviciiDefault.add(serviciu);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+ //       TODO: citește serviciile din baza de date
+
+        try {
+            List<AbstractModel> serviciiDefault = Serviciu.readServiciiDefault();
+            for(AbstractModel serviciu:serviciiDefault){
+                this.servicii.add((Serviciu) serviciu);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Pachet(PachetBuilder pachetBuilder) {
