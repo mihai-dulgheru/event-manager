@@ -1,9 +1,11 @@
 package mvc.controller;
 
 import enums.MetodaDePlata;
+import enums.Moneda;
 import interfaces.ViewUpdater;
 import mvc.model.Contract;
 import mvc.model.Pachet;
+import mvc.model.Serviciu;
 import mvc.view.ContractView;
 
 import java.util.UUID;
@@ -26,5 +28,14 @@ public class ContractController implements ViewUpdater {
     }
 
     public void updateContract(String dataIncheiere, Pachet pachet, String observatii, MetodaDePlata metodaDePlata) {
+        model.setDataIncheiere(dataIncheiere);
+        double costTotal = 0;
+        for(Serviciu serviciu: pachet.getServicii()){
+            costTotal+=serviciu.getCostServiciu();
+        }
+        model.setCostTotal(costTotal);
+        model.setMoneda(Moneda.RON);
+        model.setObservatii(observatii);
+        model.setMetodaDePlata(metodaDePlata);
     }
 }
