@@ -60,6 +60,7 @@ public class Application {
             String dataIncheiere = DateUtil.today();
             String observatii = adaugaObservatii();
             MetodaDePlata metodaDePlata = alegeMetodaDePlata();
+
             contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
             contractController.updateView();
         } catch (Exception e) {
@@ -244,12 +245,28 @@ public class Application {
     }
 
     private static String adaugaObservatii() {
-        // TODO: afișează un prompter, citește toate liniile introduse de user, concatenează-le și returnează-le
-        return "";
+        System.out.println("Introduceți detalii suplimentare: ");
+        String obs = SCANNER.nextLine();
+        return obs;
     }
 
     private static MetodaDePlata alegeMetodaDePlata() {
-        // TODO: afișează la consolă toate metodele de plată disponibile, citește index-ul metodei alese și returnează metoda de plată
-        return MetodaDePlata.CARD;
+        Map<Integer, ? extends Enum<?>> metodaDePlataMap = MetodaDePlata.getEnumMap();
+        for (Map.Entry<Integer, ? extends Enum<?>> entry : metodaDePlataMap.entrySet()) {
+            System.out.println(entry.getKey() + ". " + entry.getValue());
+        }
+        System.out.println("Alegeți metoda de plata: ");
+        Integer option;
+        try {
+            option = Integer.parseInt(SCANNER.nextLine());
+            if (!metodaDePlataMap.containsKey(option)) {
+                System.out.println("Opțiunea nu există!");
+                return alegeMetodaDePlata();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Opțiunea nu este un număr!");
+            return alegeMetodaDePlata();
+        }
+        return (MetodaDePlata) metodaDePlataMap.get(option);
     }
 }
