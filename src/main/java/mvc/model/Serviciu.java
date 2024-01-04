@@ -41,11 +41,7 @@ public class Serviciu extends AbstractModel {
         this.id = UUID.randomUUID();
         this.numeServiciu = numeServiciu;
         this.costServiciu = costServiciu;
-        if (durata != null && durata > 0) {
-            this.durata = durata;
-        } else {
-            throw new IllegalArgumentException("Durata nu este valida!");
-        }
+        this.durata = durata;
         this.observatii = observatii;
         this.tipEveniment = tipEveniment;
     }
