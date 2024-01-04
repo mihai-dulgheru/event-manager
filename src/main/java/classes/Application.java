@@ -53,6 +53,8 @@ public class Application {
             EvenimentView evenimentView = new EvenimentView();
             EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
 
+            evenimentController.getEveniment().insert();
+
             Pachet pachet = alegePachet(evenimentController.getEveniment());
             PachetView pachetView = new PachetView();
             PachetController pachetController = new PachetController(pachet, pachetView);
@@ -63,7 +65,16 @@ public class Application {
 
             contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
             contractController.updateView();
+
+            // TODO: salvează toate colecțiile în baza de date
+            // TODO: citește toate colecțiile din baza de date la pornire
+            // TODO: adaugă metoda de creare cont
+            // TODO: adaugă meniu cu opțiuni atât pentru un user neautentificat, cât și pentru unul autentificat
+            // TODO: implementează metodele de afișare modele din MVC
+
+            Database.commit();
         } catch (Exception e) {
+            Database.rollback();
             System.out.println("Eroare: " + e.getMessage());
         } finally {
             Database.disconnect();
@@ -95,6 +106,7 @@ public class Application {
     }
 
     private static CategorieEveniment alegeCategorieEveniment() {
+        System.out.println("Categorii de evenimente disponibile: ");
         Map<Integer, ? extends Enum<?>> categorieEvenimentMap = CategorieEveniment.getEnumMap();
         for (Map.Entry<Integer, ? extends Enum<?>> entry : categorieEvenimentMap.entrySet()) {
             System.out.println(entry.getKey() + ". " + entry.getValue());
@@ -115,6 +127,7 @@ public class Application {
     }
 
     private static TipEveniment alegeTipEveniment() {
+        System.out.println("Tipuri de evenimente disponibile: ");
         Map<Integer, ? extends Enum<?>> tipEvenimentMap = TipEveniment.getEnumMap();
         for (Map.Entry<Integer, ? extends Enum<?>> entry : tipEvenimentMap.entrySet()) {
             System.out.println(entry.getKey() + ". " + entry.getValue());
@@ -246,11 +259,11 @@ public class Application {
 
     private static String adaugaObservatii() {
         System.out.println("Introduceți detalii suplimentare: ");
-        String obs = SCANNER.nextLine();
-        return obs;
+        return SCANNER.nextLine();
     }
 
     private static MetodaDePlata alegeMetodaDePlata() {
+        System.out.println("Metode de plata disponibile: ");
         Map<Integer, ? extends Enum<?>> metodaDePlataMap = MetodaDePlata.getEnumMap();
         for (Map.Entry<Integer, ? extends Enum<?>> entry : metodaDePlataMap.entrySet()) {
             System.out.println(entry.getKey() + ". " + entry.getValue());

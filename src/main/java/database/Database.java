@@ -25,7 +25,25 @@ public final class Database {
     public static void connect() {
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:database.db");
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             statement = connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void commit() {
+        try {
+            connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void rollback() {
+        try {
+            connection.rollback();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -39,7 +57,6 @@ public final class Database {
         }
     }
 
-    // TODO: populează baza de date cu date plauzibile
     public static void populate() {
         try {
             Client[] clients = getClients();
@@ -53,18 +70,18 @@ public final class Database {
                     new Contract(clients[1].getId(), 80000d, Moneda.EUR, "Producție și management concert", MetodaDePlata.TRANSFER_BANCAR),
                     new Contract(clients[2].getId(), 12000d, Moneda.RON, "Organizare stand expoziție", MetodaDePlata.CARD),
                     new Contract(clients[3].getId(), 50000d, Moneda.EUR, "Planificare festival complet", MetodaDePlata.CASH),
-                    new Contract(clients[4].getId(),40000d, Moneda.EUR, "Planificare nuntă integrală", MetodaDePlata.TRANSFER_BANCAR),};
+                    new Contract(clients[4].getId(), 40000d, Moneda.EUR, "Planificare nuntă integrală", MetodaDePlata.TRANSFER_BANCAR),};
 
             for (Contract contract : contracts) {
                 contract.insert();
             }
 
             Locatie[] locations = {
-                    new Locatie("Gradina Floreasca", 140),
-                    new Locatie("Arenele Romane", 5000),
-                    new Locatie("Galeria Galateca", 140),
-                    new Locatie("Romexpo", 8000),
-                    new Locatie("Palatul Știrbey", 200),};
+                    new Locatie("Gradina Floreasca", 140, 7000),
+                    new Locatie("Arenele Romane", 5000, 250000),
+                    new Locatie("Galeria Galateca", 140, 7000),
+                    new Locatie("Romexpo", 8000, 400000),
+                    new Locatie("Palatul Știrbey", 200, 10000),};
 
             for (Locatie locatie : locations) {
                 locatie.insert();
@@ -85,7 +102,6 @@ public final class Database {
             Serviciu[] servicii = {
                     new Serviciu("Curățenie", 2000f, null, "Calitate superioară în serviciile de curățenie", "DEFAULT"),
                     new Serviciu("Servicii de siguranță și prim ajutor", 3000f, null, "Asigurarea unui personal de siguranță și prim ajutor pentru a gestiona situații de urgență.", "DEFAULT"),
-
                     new Serviciu("Decorare Biserică și Locație", 2000f, 2f, "Aranjamente florale și decor pentru biserică și locul de petrecere", TipEveniment.BOTEZ.toString()),
                     new Serviciu("Catering Botez", 9000f, null, "Meniu special pentru petrecerea de botez, inclusiv băuturi și deserturi", TipEveniment.BOTEZ.toString()),
                     new Serviciu("Fotografie și Videografie Botez", 7000f, null, "Servicii profesionale de capturare a momentelor speciale ale botezului", TipEveniment.BOTEZ.toString()),
@@ -95,7 +111,6 @@ public final class Database {
                     new Serviciu("Tort și Dulciuri Personalizate", 2000f, null, "Tort de botez personalizat și dulciuri tematice pentru petrecere", TipEveniment.BOTEZ.toString()),
                     new Serviciu("Cadouri pentru Invitați", 1200f, null, "Pachete de cadouri pentru invitați, inclusiv mărturii personalizate și suveniruri", TipEveniment.BOTEZ.toString()),
                     new Serviciu("Servicii Religioase", 800f, 2f, "Asistență în organizarea serviciilor religioase pentru momentul botezului", TipEveniment.BOTEZ.toString()),
-
                     new Serviciu("Logistică și Planificare Eveniment", 7000f, null, "Coordonarea logistică a evenimentului, gestionarea spațiului, programarea artiștilor și a echipamentelor.", TipEveniment.CONCERT.toString()),
                     new Serviciu("Sunet și Iluminare Profesională", 40000f, null, "Furnizarea de echipamente de sunet și iluminare de înaltă calitate pentru o experiență audiovizuală excelentă.", TipEveniment.CONCERT.toString()),
                     new Serviciu("Servicii de Catering și Băuturi", 14000f, null, "Oferirea de opțiuni de catering pentru a satisface nevoile alimentare ale participanților la concert.", TipEveniment.CONCERT.toString()),
@@ -113,9 +128,6 @@ public final class Database {
                     new Serviciu("Camere de Odihnă pentru Artiști", 9000f, null, "Asigurarea spațiilor confortabile de odihnă și facilități pentru artiști.", TipEveniment.CONCERT.toString()),
                     new Serviciu("Promovare în Social Media", 8000f, 9f, "Gestionarea campaniilor de promovare în social media pentru a atrage audiența.", TipEveniment.CONCERT.toString()),
                     new Serviciu("Servicii de Streaming Live", 13000f, null, "Transmiterea live a concertului pentru fanii care nu pot participa fizic.", TipEveniment.CONCERT.toString()),
-
-
-
                     new Serviciu("Design Expozițional și Standuri", 9000f, 4f, "Crearea unui design atractiv pentru expoziție și standuri personalizate pentru expozanți.", TipEveniment.EXPOZITIE.toString()),
                     new Serviciu("Gestionarea Spațiului Expozițional", 15000f, null, "Coordonarea și asignarea spațiilor expoziționale pentru expozanți și participanți.", TipEveniment.EXPOZITIE.toString()),
                     new Serviciu("Iluminare și Echipamente Audiovizuale", 8000f, null, "Furnizarea de iluminare adecvată și echipamente audiovizuale pentru a evidenția exponatele și a crea o atmosferă plăcută.", TipEveniment.EXPOZITIE.toString()),
@@ -123,9 +135,6 @@ public final class Database {
                     new Serviciu("Marketing și Publicitate Expozițională", 9000f, 7f, "Promovarea expoziției prin campanii de marketing și publicitate pentru a atrage un public mai larg.", TipEveniment.EXPOZITIE.toString()),
                     new Serviciu("Ghiduri și Tururi Expoziționale", 6000f, 3f, "Asigurarea de ghizi și tururi pentru a oferi informații detaliate despre exponate și artiști.", TipEveniment.EXPOZITIE.toString()),
                     new Serviciu("Securitate și Monitorizare Expozițională", 7000f, null, "Asigurarea măsurilor de securitate pentru a proteja exponatele și a monitoriza evenimentul.", TipEveniment.EXPOZITIE.toString()),
-
-
-
                     new Serviciu("Decor și Design Nunta", 12000f, null, "Crearea unui decor tematic și design personalizat pentru locul de desfășurare a nunții.", TipEveniment.NUNTA.toString()),
                     new Serviciu("Muzică Live sau DJ", 7000f, 1f, "Asigurarea serviciilor muzicale pentru ceremonie și petrecere, fie prin muzică live sau DJ.", TipEveniment.NUNTA.toString()),
                     new Serviciu("Catering și Tort Nunta", 20000f, null, "Oferirea de servicii de catering pentru masă și un tort personalizat pentru ceremonia de nuntă.", TipEveniment.NUNTA.toString()),
@@ -140,10 +149,6 @@ public final class Database {
                     new Serviciu("Servicii de Proiecții și Lumini Ambientale", 3200f, null, "Furnizarea de proiecții și iluminare ambientală pentru a crea o atmosferă de vis.", TipEveniment.NUNTA.toString()),
                     new Serviciu("Stilist pentru Mire și Domnișoare de Onoare", 4000f, 6f, "Consultanță în alegerea ținutelor și stilizarea mirelui și a domnișoarelor de onoare.", TipEveniment.NUNTA.toString()),
                     new Serviciu("Servicii de Artificii sau Lumini și Sunet Spectaculos", 4000f, 2f, "Organizarea unui spectacol impresionant de artificii sau un show de lumini și sunet.", TipEveniment.NUNTA.toString()),
-
-
-
-
                     new Serviciu("Decor și Design Eveniment", 4000f, 4f, "Crearea unui decor festiv și design tematic pentru evenimentul de absolvire.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),
                     new Serviciu("Muzică și DJ pentru Petrecere", 3800f, 2f, "Asigurarea de servicii muzicale și DJ pentru a menține atmosfera veselă pe parcursul petrecerii de absolvire.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),
                     new Serviciu("Servicii de Catering și Băuturi", 10000f, null, "Oferirea de opțiuni variate de catering și băuturi pentru a satisface gusturile invitaților.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),

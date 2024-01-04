@@ -30,8 +30,8 @@ public class ContractController implements ViewUpdater {
     public void updateContract(String dataIncheiere, Pachet pachet, String observatii, MetodaDePlata metodaDePlata) {
         model.setDataIncheiere(dataIncheiere);
         double costTotal = 0;
-        for(Serviciu serviciu: pachet.getServicii()){
-            costTotal+=serviciu.getCostServiciu();
+        for (Serviciu serviciu : pachet.getServicii()) {
+            costTotal += serviciu.getCostServiciu();
         }
         model.setCostTotal(costTotal);
         model.setMoneda(Moneda.RON);

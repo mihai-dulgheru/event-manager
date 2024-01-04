@@ -14,14 +14,14 @@ import java.util.UUID;
  * Active Record
  */
 public class Locatie extends AbstractModel {
-    // TODO: adaugă cost_locatie
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS locatii" +
                     "(" +
                     "    id_locatie VARCHAR(36) PRIMARY KEY," +
                     "    denumire   VARCHAR(255) NOT NULL," +
-                    "    capacitate INTEGER NOT NULL" +
+                    "    capacitate INTEGER NOT NULL," +
+                    "    cost_locatie INTEGER NOT NULL" +
                     ")");
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -31,17 +31,20 @@ public class Locatie extends AbstractModel {
     private final UUID id;
     private String denumire;
     private int capacitate;
+    private int cost;
 
-    public Locatie(String denumire, int capacitate) {
+    public Locatie(String denumire, int capacitate, int cost) {
         this.id = UUID.randomUUID();
         this.denumire = denumire;
         this.capacitate = capacitate;
+        this.cost = cost;
     }
 
-    private Locatie(UUID id, String denumire, int capacitate) {
+    private Locatie(UUID id, String denumire, int capacitate, int cost) {
         this.id = id;
         this.denumire = denumire;
         this.capacitate = capacitate;
+        this.cost = cost;
     }
 
     public static AbstractModel readOne(UUID id) throws SQLException {
@@ -69,8 +72,9 @@ public class Locatie extends AbstractModel {
         UUID idLocatie = UUID.fromString(resultSet.getString(1));
         String denumire = resultSet.getString(2);
         int capacitate = resultSet.getInt(3);
+        int cost = resultSet.getInt(4);
 
-        return new Locatie(idLocatie, denumire, capacitate);
+        return new Locatie(idLocatie, denumire, capacitate, cost);
     }
 
     public static List<Locatie> findByDataEveniment(String dataEveniment) throws SQLException {
@@ -85,8 +89,9 @@ public class Locatie extends AbstractModel {
             UUID idLocatie = UUID.fromString(rs.getString(1));
             String denumire = rs.getString(2);
             int capacitate = rs.getInt(3);
+            int cost = rs.getInt(4);
 
-            locatii.add(new Locatie(idLocatie, denumire, capacitate));
+            locatii.add(new Locatie(idLocatie, denumire, capacitate, cost));
         }
 
         return locatii;
@@ -94,12 +99,13 @@ public class Locatie extends AbstractModel {
 
     @Override
     public void insert() throws SQLException {
-        String insertString = "INSERT INTO locatii VALUES (?, ?, ?)";
+        String insertString = "INSERT INTO locatii VALUES (?, ?, ?, ?)";
         PreparedStatement preparedStatement = Database.connection.prepareStatement(insertString);
 
         preparedStatement.setString(1, id.toString());
         preparedStatement.setString(2, denumire);
         preparedStatement.setInt(3, capacitate);
+        preparedStatement.setInt(4, cost);
 
         preparedStatement.executeUpdate();
         System.out.println("1 row affected");
@@ -107,12 +113,13 @@ public class Locatie extends AbstractModel {
 
     @Override
     public void update() throws SQLException {
-        String updateString = "UPDATE locatii SET denumire = ?, capacitate = ? WHERE id_locatie = ?";
+        String updateString = "UPDATE locatii SET denumire = ?, capacitate = ?, cost = ? WHERE id_locatie = ?";
         PreparedStatement preparedStatement = Database.connection.prepareStatement(updateString);
 
         preparedStatement.setString(1, denumire);
         preparedStatement.setInt(2, capacitate);
-        preparedStatement.setString(3, id.toString());
+        preparedStatement.setInt(3, cost);
+        preparedStatement.setString(4, id.toString());
 
         preparedStatement.executeUpdate();
         System.out.println("1 row affected");
@@ -149,12 +156,21 @@ public class Locatie extends AbstractModel {
         this.capacitate = capacitate;
     }
 
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
     @Override
     public String toString() {
         return "Locatie{" +
                 "id=" + id +
                 ", denumire='" + denumire + '\'' +
                 ", capacitate=" + capacitate +
+                ", cost=" + cost +
                 '}';
     }
 }

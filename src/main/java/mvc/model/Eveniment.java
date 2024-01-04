@@ -132,7 +132,6 @@ public class Eveniment extends AbstractModel {
         insertEvent.setInt(6, this.nrParticipanti);
 
         insertEvent.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
