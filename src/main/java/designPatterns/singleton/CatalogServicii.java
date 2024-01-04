@@ -5,7 +5,10 @@ import enums.TipEveniment;
 import mvc.model.Serviciu;
 
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CatalogServicii {
     private static volatile CatalogServicii instance;
@@ -56,7 +59,7 @@ public class CatalogServicii {
         }
     }
 
-    public List<Serviciu> getServicii(TipEveniment tipEveniment, String servicii, UUID idPachet) {
+    public List<Serviciu> getServicii(TipEveniment tipEveniment, String servicii) {
         List<Serviciu> serviciiList = new ArrayList<>();
         String[] serviciiIds = servicii.split(",");
         for (String serviciuId : serviciiIds) {

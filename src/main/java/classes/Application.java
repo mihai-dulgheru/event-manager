@@ -1,7 +1,9 @@
 package classes;
 
+import abstractClasses.AbstractModel;
 import database.Database;
 import designPatterns.abstractFactory.*;
+import designPatterns.singleton.CatalogServicii;
 import enums.CategorieEveniment;
 import enums.MetodaDePlata;
 import enums.TipEveniment;
@@ -51,7 +53,7 @@ public class Application {
             EvenimentView evenimentView = new EvenimentView();
             EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
 
-            Pachet pachet = alegePachet(evenimentController.getIdEveniment());
+            Pachet pachet = alegePachet(evenimentController.getEveniment());
             PachetView pachetView = new PachetView();
             PachetController pachetController = new PachetController(pachet, pachetView);
 
@@ -207,10 +209,38 @@ public class Application {
         };
     }
 
-    private static Pachet alegePachet(UUID idEveniment) {
-        // TODO: afișează la consolă toate serviciile disponibile în funcție de tipul evenimentului
-        // TODO: citește, serviciile alese de user, parsează indecși și creează obiectul de tip Pachet folosind PachetBuilder
-        return null;
+    private static Pachet alegePachet(Eveniment eveniment) throws SQLException {
+        TipEveniment tipEveniment = eveniment.getTipEveniment();
+        CatalogServicii catalogServicii = CatalogServicii.getInstance();
+        Pachet.PachetBuilder pachetBuilder = new Pachet.PachetBuilder(eveniment.getId());
+        System.out.println("Pachetul dumneavoastră conține următoarele servicii: ");
+        List<AbstractModel> serviciiDefault = Serviciu.readServiciiDefault();
+        for (int i = 0; i < serviciiDefault.size(); i++) {
+            System.out.printf("%d. %s%n", i + 1, ((Serviciu) (serviciiDefault.get(i))).getNumeServiciu());
+        }
+        System.out.println("Doriți să adăugați un serviciu? (y/n)");
+        String answer = SCANNER.nextLine();
+        while (answer.equals("y")) {
+            System.out.println("Servicii disponibile: ");
+            catalogServicii.afiseazaServicii(tipEveniment);
+            System.out.println("Alegeți serviciul: ");
+            int option;
+            try {
+                option = Integer.parseInt(SCANNER.nextLine());
+                if (option < 1 || option >= catalogServicii.getCatalog().get(tipEveniment).size() + 1) {
+                    System.out.println("Opțiunea nu există!");
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Opțiunea nu este un număr!");
+                continue;
+            }
+            pachetBuilder.addServiciu(catalogServicii.getCatalog().get(tipEveniment).get(option - 1));
+            System.out.println("Serviciul a fost adăugat cu succes!");
+            System.out.println("Doriți să adăugați un serviciu? (y/n)");
+            answer = SCANNER.nextLine();
+        }
+        return pachetBuilder.build();
     }
 
     private static String adaugaObservatii() {

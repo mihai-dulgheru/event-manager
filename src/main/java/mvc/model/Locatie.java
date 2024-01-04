@@ -14,6 +14,7 @@ import java.util.UUID;
  * Active Record
  */
 public class Locatie extends AbstractModel {
+    // TODO: adaugă cost_locatie
     static {
         try {
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS locatii" +

@@ -40,11 +40,11 @@ public class Pachet extends AbstractModel {
         this.idEveniment = idEveniment;
         this.numePachet = numePachet;
         this.detaliiPachet = detaliiPachet;
- //       TODO: citește serviciile din baza de date
+        //       TODO: citește serviciile din baza de date
 
         try {
             List<AbstractModel> serviciiDefault = Serviciu.readServiciiDefault();
-            for(AbstractModel serviciu:serviciiDefault){
+            for (AbstractModel serviciu : serviciiDefault) {
                 this.servicii.add((Serviciu) serviciu);
             }
         } catch (SQLException e) {

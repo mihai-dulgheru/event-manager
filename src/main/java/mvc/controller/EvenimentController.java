@@ -22,4 +22,8 @@ public class EvenimentController implements ViewUpdater {
     public UUID getIdEveniment() {
         return this.model.getId();
     }
+
+    public Eveniment getEveniment() {
+        return this.model;
+    }
 }

@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,7 +69,7 @@ public class Serviciu extends AbstractModel {
         return load(rs);
     }
 
-    public static List<AbstractModel> readServiciiDefault() throws SQLException{
+    public static List<AbstractModel> readServiciiDefault() throws SQLException {
         String selectString = "SELECT * FROM servicii WHERE tip_eveniment = ?";
         PreparedStatement selectService = Database.connection.prepareStatement(selectString);
 
@@ -81,7 +80,8 @@ public class Serviciu extends AbstractModel {
             services.add(load(rs));
         }
 
-        return services;    }
+        return services;
+    }
 
     public static List<AbstractModel> readMany() throws SQLException {
         ResultSet rs = Database.statement.executeQuery("SELECT * FROM servicii");
