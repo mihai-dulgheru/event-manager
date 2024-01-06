@@ -93,6 +93,16 @@ public class Eveniment extends AbstractModel {
         return packages;
     }
 
+    public static AbstractModel readEvenimenteByIdContract(UUID id_contract) throws SQLException {
+        String selectString = "SELECT * FROM evenimente where id_contract = ?";
+        PreparedStatement selectEveniment = Database.connection.prepareStatement(selectString);
+
+        selectEveniment.setString(1, id_contract.toString());
+
+        ResultSet rs = selectEveniment.executeQuery();
+        return load(rs);
+    }
+
     protected static AbstractModel load(ResultSet resultSet) throws SQLException {
         UUID idEveniment = UUID.fromString(resultSet.getString(1));
         UUID idContract = UUID.fromString(resultSet.getString(2));
