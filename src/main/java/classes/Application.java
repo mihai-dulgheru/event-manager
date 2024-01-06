@@ -3,10 +3,12 @@ package classes;
 import abstractClasses.AbstractModel;
 import database.Database;
 import designPatterns.abstractFactory.*;
+import designPatterns.proxy.ClientProxy;
 import designPatterns.singleton.CatalogServicii;
 import enums.CategorieEveniment;
 import enums.MetodaDePlata;
 import enums.TipEveniment;
+import exceptions.ClientAgeException;
 import mvc.controller.*;
 import mvc.model.*;
 import mvc.view.*;
@@ -34,11 +36,13 @@ public class Application {
             ClientView clientView = null;
             ClientController clientController = null;
             if (optiuneDeschidereMeniu == 2) {
-                creareCont();
+                client = creareCont();
                 optiuneDeschidereMeniu = 1;
             }
             if (optiuneDeschidereMeniu == 1) {
-                client = autentificare();
+                if (client == null) {
+                    client = autentificare();
+                }
                 clientView = new ClientView();
                 clientController = new ClientController(client, clientView);
 
@@ -332,7 +336,96 @@ public class Application {
         // TODO
     }
 
-    private static void creareCont() {
-        // TODO
+    private static Client creareCont() {
+        ClientProxy proxy = new ClientProxy();
+        String numeClient = null;
+        String prenumeClient = null;
+        String cnp = null;
+        String adresa = null;
+        String email = null;
+        String telefon = null;
+        String username = null;
+        String parola = null;
+        String confirmareParola = null;
+        do {
+            System.out.println("Introduceți numele: ");
+            numeClient = SCANNER.nextLine();
+            if (numeClient.length() < 3) {
+                System.out.println("Numele trebuie să conțină cel puțin 3 caractere!");
+            }
+        } while (numeClient.length() < 3);
+        do {
+            System.out.println("Introduceți prenumele: ");
+            prenumeClient = SCANNER.nextLine();
+            if (prenumeClient.length() < 3) {
+                System.out.println("Prenumele trebuie să conțină cel puțin 3 caractere!");
+            }
+        } while (prenumeClient.length() < 3);
+        do {
+            System.out.println("Introduceți CNP-ul: ");
+            cnp = SCANNER.nextLine();
+            if (cnp.length() != 13) {
+                System.out.println("CNP-ul trebuie să conțină 13 caractere!");
+            }
+        } while (cnp.length() != 13);
+        do {
+            System.out.println("Introduceți adresa: ");
+            adresa = SCANNER.nextLine();
+            if (adresa.length() < 3) {
+                System.out.println("Adresa trebuie să conțină cel puțin 3 caractere!");
+            }
+        } while (adresa.length() < 3);
+        do {
+            System.out.println("Introduceți email-ul: ");
+            email = SCANNER.nextLine();
+            if (email.length() < 3) {
+                System.out.println("Email-ul trebuie să conțină cel puțin 3 caractere!");
+            }
+            if (!email.contains("@")) {
+                System.out.println("Email-ul trebuie să conțină @!");
+            }
+        } while (email.length() < 3 || !email.contains("@"));
+        do {
+            System.out.println("Introduceți numărul de telefon: ");
+            telefon = SCANNER.nextLine();
+            if (telefon.length() != 10) {
+                System.out.println("Numărul de telefon trebuie să conțină 10 caractere!");
+            }
+            if (!telefon.startsWith("07")) {
+                System.out.println("Numărul de telefon trebuie să înceapă cu 07!");
+            }
+        } while (telefon.length() != 10 || !telefon.startsWith("07"));
+        do {
+            System.out.println("Introduceți username-ul: ");
+            username = SCANNER.nextLine();
+            if (username.length() < 3) {
+                System.out.println("Username-ul trebuie să conțină cel puțin 3 caractere!");
+            }
+            if (Client.findByUsername(username) != null) {
+                System.out.println("Username-ul există deja!");
+            }
+        } while (username.length() < 3 || Client.findByUsername(username) != null);
+        do {
+            System.out.println("Introduceți parola: ");
+            parola = SCANNER.nextLine();
+            if (parola.length() < 8) {
+                System.out.println("Parola trebuie să conțină cel puțin 8 caractere!");
+            }
+        } while (parola.length() < 8);
+        do {
+            System.out.println("Confirmați parola: ");
+            confirmareParola = SCANNER.nextLine();
+            if (confirmareParola.length() < 8) {
+                System.out.println("Parola trebuie să conțină cel puțin 8 caractere!");
+            }
+            if (!confirmareParola.equals(parola)) {
+                System.out.println("Parola trebuie să fie identică cu parola introdusă anterior!");
+            }
+        } while (confirmareParola.length() < 8 || !confirmareParola.equals(parola));
+        try {
+            return proxy.createAccount(numeClient, prenumeClient, cnp, adresa, email, telefon, username, parola);
+        } catch (ClientAgeException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
