@@ -122,7 +122,7 @@ public class Locatie extends AbstractModel {
 
     @Override
     public void update() throws SQLException {
-        String updateString = "UPDATE locatii SET denumire = ?, capacitate = ?, cost = ? WHERE id_locatie = ?";
+        String updateString = "UPDATE locatii SET denumire = ?, capacitate = ?, cost_locatie = ? WHERE id_locatie = ?";
         PreparedStatement preparedStatement = Database.connection.prepareStatement(updateString);
 
         preparedStatement.setString(1, denumire);
