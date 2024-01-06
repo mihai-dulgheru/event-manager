@@ -10,6 +10,5 @@ public abstract class EvenimentCuTematica extends Eveniment {
         super(idContract, idLocatie, tipEveniment, dataEveniment, nrParticipanti, tematica);
     }
 
-    // TODO: implement this method in the concrete classes
     public abstract void tiparesteInvitatie();
 }

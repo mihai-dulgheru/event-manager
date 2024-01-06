@@ -28,8 +28,6 @@ public class Application {
     private static final Meniu MENIU = new Meniu();
 
     public static void start() {
-        // TODO: implementează metodele de afișare modele din MVC
-
         try {
             Database.connect();
 
@@ -110,6 +108,9 @@ public class Application {
 
             Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
             String tematica = null;
+            if (categorieEveniment.equals(CategorieEveniment.CU_TEMATICA)) {
+                tematica = adaugaTematica();
+            }
 
             Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti, tematica);
             EvenimentView evenimentView = new EvenimentView();
@@ -256,6 +257,18 @@ public class Application {
             return alegeNrParticipanti(capacitate);
         }
         return nrParticipanti;
+    }
+
+    public static String adaugaTematica() {
+        do {
+            System.out.println("Introduceți tematica: ");
+            String tematica = SCANNER.nextLine();
+            if (tematica.length() < 3) {
+                System.out.println("Tematica trebuie să conțină cel puțin 3 caractere!");
+                continue;
+            }
+            return tematica;
+        } while (true);
     }
 
     private static Eveniment creareEveniment(TipEveniment tipEveniment, CategorieEveniment categorieEveniment, UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti, String tematica) {

@@ -11,6 +11,13 @@ public class BotezCuTematica extends EvenimentCuTematica {
 
     @Override
     public void tiparesteInvitatie() {
-        System.out.println("Tiparim invitatie pentru botez cu tematica");
+        String string = "E momentul să împărtășim o veste minunată cu tine! Te invităm cu drag la un eveniment special - Botezul cu tematică pe care îl organizăm pentru micuțul nostru îngeraș.\n\n"
+                + "Detalii eveniment:\n" + "- Dată: " + this.getDataEveniment() + "\n" + "- Locație: "
+                + this.getNumeLocatie() + "\n" + "- Tematică: " + this.getTematica() + "\n\n"
+                + "Tematica botezului adaugă o notă specială acestei zile, creând un cadru magic și memorabil.\n\n"
+                + "Te rugăm să confirmi prezența până la data de " + this.getDataLimitaConfirmare() + ".\n\n"
+                + "Suntem nerăbdători să împărtășim această zi cu tine și să creăm amintiri frumoase împreună!\n\n"
+                + "Cu drag,\n" + this.getNumeClient();
+        System.out.println(string);
     }
 }

@@ -12,11 +12,10 @@ public class EvenimentView implements Printable {
     public void print(AbstractModel model) {
         try {
             Eveniment eveniment = (Eveniment) model;
-            AbstractModel abstractModelLocatie = null;
+            AbstractModel abstractModelLocatie;
             abstractModelLocatie = Locatie.readDenumireLocatie(eveniment.getIdLocatie());
             Locatie locatie = (Locatie) abstractModelLocatie;
-            System.out.println(eveniment.getTipEveniment() + " | " + eveniment.getDataEveniment() +
-                    " | " + locatie + " | " + eveniment.getNrParticipanti() + " participanti");
+            System.out.println(eveniment.getTipEveniment() + " | " + eveniment.getDataEveniment() + " | " + locatie + " | " + eveniment.getNrParticipanti() + " participanti");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

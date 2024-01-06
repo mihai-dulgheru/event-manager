@@ -11,16 +11,16 @@ public class PachetView implements Printable {
         Pachet pachet = (Pachet) model;
         StringBuilder string = new StringBuilder();
         string.append(pachet.getNumePachet());
-        string.append(" | Pachetul contine serviciile: ");
-        for(Serviciu serviciu: pachet.getServicii()){
-           if(serviciu.equals(pachet.getServicii().getLast())){
-               string.append(" ");
-               string.append(serviciu.getNumeServiciu());
-           } else {
-               string.append(" ");
-               string.append(serviciu.getNumeServiciu());
-               string.append(",");
-           }
+        string.append(" | Pachetul conține serviciile: ");
+        for (Serviciu serviciu : pachet.getServicii()) {
+            if (serviciu.equals(pachet.getServicii().get(pachet.getServicii().size() - 1))) {
+                string.append(" ");
+                string.append(serviciu.getNumeServiciu());
+            } else {
+                string.append(" ");
+                string.append(serviciu.getNumeServiciu());
+                string.append(",");
+            }
         }
         string.append(" | ");
         string.append(pachet.getDetaliiPachet());

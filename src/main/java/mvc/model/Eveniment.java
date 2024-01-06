@@ -257,4 +257,27 @@ public class Eveniment extends AbstractModel {
                 ", tematica='" + tematica + '\'' +
                 '}';
     }
+
+    protected String getNumeLocatie() {
+        try {
+            Locatie locatie = (Locatie) Locatie.readOne(this.idLocatie);
+            return locatie.getDenumire();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected String getDataLimitaConfirmare() {
+        return DateUtil.subtractDays(this.dataEveniment, 30);
+    }
+
+    protected String getNumeClient() {
+        try {
+            Contract contract = (Contract) Contract.readOne(this.idContract);
+            Client client = (Client) Client.readOne(contract.getIdClient());
+            return client.getNumeClient() + " " + client.getPrenumeClient();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

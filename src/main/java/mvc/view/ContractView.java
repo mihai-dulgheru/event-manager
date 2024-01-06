@@ -8,7 +8,6 @@ public class ContractView implements Printable {
     @Override
     public void print(AbstractModel model) {
         Contract contract = (Contract) model;
-        System.out.println(contract.getDataIncheiere() + " | " + contract.getCostTotal() +
-                " | " + contract.getMoneda() + " | " + contract.getMetodaDePlata() + " | " + contract.getObservatii());
+        System.out.println(contract.getDataIncheiere() + " | " + contract.getCostTotal() + " | " + contract.getMoneda() + " | " + contract.getMetodaDePlata() + " | " + contract.getObservatii());
     }
 }

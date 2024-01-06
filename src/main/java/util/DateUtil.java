@@ -40,4 +40,20 @@ public final class DateUtil {
 
         return simpleDateFormat.format(new Date());
     }
+
+    public static String subtractDays(String dataEveniment, int days) {
+        String dateFormat = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        simpleDateFormat.setLenient(false);
+
+        try {
+            Date date = simpleDateFormat.parse(dataEveniment);
+            long time = date.getTime();
+            time -= (long) days * 24 * 60 * 60 * 1000;
+            date.setTime(time);
+            return simpleDateFormat.format(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
 }
