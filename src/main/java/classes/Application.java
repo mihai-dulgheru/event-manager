@@ -23,14 +23,13 @@ import java.util.*;
  */
 public class Application {
     private static final Scanner SCANNER = new Scanner(System.in);
+    private static final Meniu MENIU = new Meniu();
 
     public static void start() {
         try {
             Database.connect();
 
-            Meniu meniu = new Meniu();
-
-            Integer optiuneDeschidereMeniu = meniu.deschidereAplicatie();
+            Integer optiuneDeschidereMeniu = MENIU.deschidereAplicatie();
             Client client = null;
             ClientView clientView = null;
             ClientController clientController = null;
@@ -43,7 +42,7 @@ public class Application {
                 clientView = new ClientView();
                 clientController = new ClientController(client, clientView);
 
-                Integer optiuneUserAutentificat = meniu.afiseazaOptiuniUser();
+                Integer optiuneUserAutentificat = MENIU.afiseazaOptiuniUser();
                 if (optiuneUserAutentificat == 1) {
                     Contract contract = new Contract(clientController.getIdClient());
                     ContractView contractView = new ContractView();
@@ -75,22 +74,25 @@ public class Application {
 
                     contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
                     contractController.updateView();
+
+                    Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
                 }
                 if (optiuneUserAutentificat == 2) {
                     System.out.println("Evenimente: ");
+                    assert client != null;
                     vizualizareEvenimenteUser(client.getId());
                 }
                 if (optiuneUserAutentificat == 3) {
+                    assert client != null;
                     schimbareParola(client.getId());
                 }
             }
 
 
-            Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
-
             // TODO: adaugă metoda de creare cont
-            // TODO: adaugă meniu cu opțiuni atât pentru un user neautentificat, cât și pentru unul autentificat
             // TODO: implementează metodele de afișare modele din MVC
+            // TODO: fa meniul recursiv + adăugare opțiune de ieșire din meniu
+            // TODO: să poată accepta doar y/n
 
             Database.commit();
         } catch (Exception e) {
@@ -304,22 +306,22 @@ public class Application {
     }
 
     private static void vizualizareEvenimenteUser(UUID id) {
-        if(id==null || id.toString().isEmpty()){
+        if (id == null || id.toString().isEmpty()) {
             System.out.println("Id-ul clientului nu este valid!");
         } else {
             try {
                 List<AbstractModel> contracts = new ArrayList<>(Contract.readContracteByIdClient(id));
                 int i = 1;
 
-                for(AbstractModel abstractModel:contracts){
-                    Contract contract=(Contract) abstractModel;
+                for (AbstractModel abstractModel : contracts) {
+                    Contract contract = (Contract) abstractModel;
                     List<AbstractModel> evenimente = new ArrayList<>();
                     evenimente.add(Eveniment.readEvenimenteByIdContract(contract.getId()));
-                    for(AbstractModel abstractModel1:evenimente){
-                        Eveniment eveniment=(Eveniment) abstractModel1;
+                    for (AbstractModel abstractModelEveniment : evenimente) {
+                        Eveniment eveniment = (Eveniment) abstractModelEveniment;
                         AbstractModel abstractModelLocatie = Locatie.readDenumireLocatie(eveniment.getIdLocatie());
                         Locatie locatie = (Locatie) abstractModelLocatie;
-                        System.out.println(i + ". " +  eveniment.getTipEveniment() + ": " + locatie.getDenumire() + " | " + eveniment.getDataEveniment() + " | " + eveniment.getNrParticipanti() + " participanti");
+                        System.out.println(i++ + ". " + eveniment.getTipEveniment() + ": " + locatie.getDenumire() + " | " + eveniment.getDataEveniment() + " | " + eveniment.getNrParticipanti() + " participanti");
                     }
                 }
             } catch (SQLException e) {
@@ -329,10 +331,10 @@ public class Application {
     }
 
     private static void schimbareParola(UUID id) {
+        // TODO
     }
 
     private static void creareCont() {
+        // TODO
     }
-
-
 }

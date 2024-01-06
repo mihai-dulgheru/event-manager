@@ -5,9 +5,8 @@ import java.util.Scanner;
 
 public class Meniu {
 
-    private static volatile Meniu instance;
-
     private static final Scanner SCANNER = new Scanner(System.in);
+    private static volatile Meniu instance;
 
     Meniu() {
 
