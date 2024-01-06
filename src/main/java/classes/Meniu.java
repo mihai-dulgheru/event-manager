@@ -29,11 +29,11 @@ public class Meniu {
         System.out.println("Bun venit!");
         System.out.println("1. Autentificare");
         System.out.println("2. Creare cont");
-
+        System.out.println("3. Ieșire");
 
         try {
             option = Integer.parseInt(SCANNER.nextLine());
-            if (option != 1 && option != 2) {
+            if (option != 1 && option != 2 && option != 3) {
                 System.out.println("Opțiunea nu există!");
                 return deschidereAplicatie();
             }
@@ -48,14 +48,15 @@ public class Meniu {
     public Integer afiseazaOptiuniUser() {
         Integer option;
 
-        System.out.println("Introduceți optiunea: ");
-        System.out.println("1. Creaza eveniment");
-        System.out.println("2. Vizualizeaza evenimentele");
-        System.out.println("3. Schimba parola");
+        System.out.println("Introduceți opțiunea: ");
+        System.out.println("1. Crează eveniment");
+        System.out.println("2. Vizualizează evenimentele");
+        System.out.println("3. Schimbă parola");
+        System.out.println("4. Ieșire");
 
         try {
             option = Integer.parseInt(SCANNER.nextLine());
-            if (option != 1 && option != 2 && option != 3) {
+            if (option != 1 && option != 2 && option != 3 && option != 4) {
                 System.out.println("Opțiunea nu există!");
                 return deschidereAplicatie();
             }
