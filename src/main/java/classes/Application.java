@@ -74,15 +74,18 @@ public class Application {
                 handleUserOptions(clientController);
                 break;
             case 2:
-                System.out.println("Evenimente: ");
-                vizualizareEvenimenteUser(clientController.getClient().getId());
+                handleViewEvents(clientController.getClient().getId());
                 handleUserOptions(clientController);
                 break;
             case 3:
-                schimbareParola(clientController.getClient());
+                handlePrintInvitations(clientController);
                 handleUserOptions(clientController);
                 break;
             case 4:
+                handleChangePassword(clientController.getClient());
+                handleUserOptions(clientController);
+                break;
+            case 5:
                 System.exit(0);
                 break;
         }
@@ -126,6 +129,10 @@ public class Application {
 
             Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
             System.out.println("Eveniment creat cu succes!");
+            System.out.println("Evenimentul dumneavoastră: ");
+            evenimentController.updateView();
+            System.out.println("Contractul dumneavoastră: ");
+            contractController.updateView();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -384,7 +391,8 @@ public class Application {
         return (MetodaDePlata) metodaDePlataMap.get(option);
     }
 
-    private static void vizualizareEvenimenteUser(UUID id) {
+    private static void handleViewEvents(UUID id) {
+        System.out.println("Evenimente: ");
         if (id == null || id.toString().isEmpty()) {
             System.out.println("Id-ul clientului nu este valid!");
         } else {
@@ -409,7 +417,11 @@ public class Application {
         }
     }
 
-    private static void schimbareParola(Client client) {
+    private static void handlePrintInvitations(ClientController clientController) {
+        // TODO
+    }
+
+    private static void handleChangePassword(Client client) {
         System.out.println("Introduceți vechea parolă: ");
         String parola = SCANNER.nextLine();
         if (client == null) {

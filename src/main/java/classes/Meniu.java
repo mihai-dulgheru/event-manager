@@ -51,12 +51,13 @@ public class Meniu {
         System.out.println("Introduceți opțiunea: ");
         System.out.println("1. Creează eveniment");
         System.out.println("2. Vizualizează evenimentele");
-        System.out.println("3. Schimbă parola");
-        System.out.println("4. Ieșire");
+        System.out.println("3. Tipărește invitații");
+        System.out.println("4. Schimbă parola");
+        System.out.println("5. Ieșire");
 
         try {
             option = Integer.parseInt(SCANNER.nextLine());
-            if (option != 1 && option != 2 && option != 3 && option != 4) {
+            if (option < 1 || option > 5) {
                 System.out.println("Opțiunea nu există!");
                 return deschidereAplicatie();
             }
@@ -67,5 +68,4 @@ public class Meniu {
 
         return option;
     }
-
 }
