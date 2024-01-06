@@ -52,10 +52,16 @@ public class CatalogServicii {
         return catalog;
     }
 
-    public void afiseazaServicii(TipEveniment tipEveniment) {
-        List<Serviciu> servicii = this.catalog.get(tipEveniment);
-        for (int i = 0; i < servicii.size(); i++) {
-            System.out.printf("%d. %s%n", i + 1, servicii.get(i).print());
+    public int afiseazaServicii(TipEveniment tipEveniment) {
+        try {
+            List<Serviciu> servicii = this.catalog.get(tipEveniment);
+            for (int i = 0; i < servicii.size(); i++) {
+                System.out.printf("%d. %s%n", i + 1, servicii.get(i).print());
+            }
+            return 0;
+        } catch (NullPointerException e) {
+            System.out.println("Nu există servicii suplimentare pentru acest tip de eveniment.");
+            return 1;
         }
     }
 

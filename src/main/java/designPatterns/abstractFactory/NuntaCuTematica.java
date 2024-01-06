@@ -11,7 +11,7 @@ public class NuntaCuTematica extends EvenimentCuTematica {
 
     @Override
     public void tiparesteInvitatie() {
-       String s = "Cu bucurie și emoție vă invităm la celebrarea dragostei, "
+        String s = "Cu bucurie și emoție vă invităm la celebrarea dragostei, "
                 + "cu ocazia nunții noastre cu tematica \"" + this.getTematica() + "\", care va avea loc "
                 + "în data de, " + this.getDataEveniment() + ", la frumoasa " + this.getNumeLocatie() + ".\n\n"
                 + "Ceremonia religioasă va avea loc la ora 16:00, iar petrecerea se va desfășura "

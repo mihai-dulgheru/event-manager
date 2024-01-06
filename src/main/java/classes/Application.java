@@ -51,8 +51,9 @@ public class Application {
 
                 handleUserOptions(clientController);
             }
+
             if (optiuneDeschidereMeniu == 3) {
-                System.exit(0);
+                Application.exit();
             }
 
             Database.commit();
@@ -86,7 +87,7 @@ public class Application {
                 handleUserOptions(clientController);
                 break;
             case 5:
-                System.exit(0);
+                Application.exit();
                 break;
         }
     }
@@ -99,6 +100,10 @@ public class Application {
 
             TipEveniment tipEveniment = alegeTipEveniment();
             CategorieEveniment categorieEveniment = alegeCategorieEveniment();
+            String tematica = null;
+            if (categorieEveniment.equals(CategorieEveniment.CU_TEMATICA)) {
+                tematica = adaugaTematica();
+            }
             String dataEveniment = alegeDataEveniment();
 
             Locatie locatie = alegeLocatie(dataEveniment);
@@ -106,10 +111,6 @@ public class Application {
             LocatieController locatieController = new LocatieController(locatie, locatieView);
 
             Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
-            String tematica = null;
-            if (categorieEveniment.equals(CategorieEveniment.CU_TEMATICA)) {
-                tematica = adaugaTematica();
-            }
 
             Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti, tematica);
             EvenimentView evenimentView = new EvenimentView();
@@ -335,7 +336,10 @@ public class Application {
 
     private static void adaugaServiciu(Pachet.PachetBuilder pachetBuilder, CatalogServicii catalogServicii, TipEveniment tipEveniment) {
         System.out.println("Servicii disponibile: ");
-        catalogServicii.afiseazaServicii(tipEveniment);
+        int status = catalogServicii.afiseazaServicii(tipEveniment);
+        if (status != 0) {
+            return;
+        }
         System.out.println("Alegeți serviciul: ");
 
         int option;
@@ -591,5 +595,11 @@ public class Application {
         } catch (ClientAgeException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void exit() {
+        Database.commit();
+        Database.disconnect();
+        System.exit(0);
     }
 }
