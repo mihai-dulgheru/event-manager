@@ -46,12 +46,19 @@ public class Application {
             if (optiuneDeschidereMeniu == 1) {
                 if (client == null) {
                     client = autentificare();
+                    while(client==null){
+                        client = autentificare();
+                    }
                 }
 
                 clientView = new ClientView();
                 clientController = new ClientController(client, clientView);
 
+
                 handleUserOptions(clientController);
+            }
+            if (optiuneDeschidereMeniu == 3) {
+               System.exit(0);
             }
 
             Database.commit();
@@ -70,13 +77,19 @@ public class Application {
         switch (optiuneUserAutentificat) {
             case 1:
                 handleCreateEvent(clientController);
+                handleUserOptions(clientController);
                 break;
             case 2:
                 System.out.println("Evenimente: ");
                 vizualizareEvenimenteUser(clientController.getClient().getId());
+                handleUserOptions(clientController);
                 break;
             case 3:
                 schimbareParola(clientController.getClient());
+                handleUserOptions(clientController);
+                break;
+            case 4:
+                System.exit(0);
                 break;
         }
     }
@@ -114,6 +127,7 @@ public class Application {
             contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
 
             Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
+            System.out.println("Eveniment creat cu succes!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

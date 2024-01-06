@@ -50,12 +50,12 @@ public class Eveniment extends AbstractModel {
         if (DateUtil.isValidDate(dataEveniment)) {
             this.dataEveniment = dataEveniment;
         } else {
-            throw new IllegalArgumentException("Data evenimentului nu este valida!");
+            throw new IllegalArgumentException("Data evenimentului nu este validă!");
         }
         if (isValid(nrParticipanti)) {
             this.nrParticipanti = nrParticipanti;
         } else {
-            throw new IllegalArgumentException("Numarul de participanti nu este valid!");
+            throw new IllegalArgumentException("Numărul de participanți nu este valid!");
         }
     }
 
@@ -68,7 +68,7 @@ public class Eveniment extends AbstractModel {
         if (isValid(nrParticipanti)) {
             this.nrParticipanti = nrParticipanti;
         } else {
-            throw new IllegalArgumentException("Numarul de participanti nu este valid!");
+            throw new IllegalArgumentException("Numărul de participanți nu este valid!");
         }
     }
 
@@ -215,7 +215,7 @@ public class Eveniment extends AbstractModel {
         if (DateUtil.isValidDate(dataEveniment)) {
             this.dataEveniment = dataEveniment;
         } else {
-            throw new IllegalArgumentException("Data evenimentului nu este valida!");
+            throw new IllegalArgumentException("Data evenimentului nu este validă!");
         }
     }
 
@@ -227,7 +227,7 @@ public class Eveniment extends AbstractModel {
         if (isValid(nrParticipanti)) {
             this.nrParticipanti = nrParticipanti;
         } else {
-            throw new IllegalArgumentException("Numarul de participanti nu este valid!");
+            throw new IllegalArgumentException("Numărul de participanți nu este valid!");
         }
     }
 
