@@ -28,6 +28,10 @@ public class Application {
     private static final Meniu MENIU = new Meniu();
 
     public static void start() {
+        // TODO: implementează metodele de afișare modele din MVC
+        // TODO: fa meniul recursiv + adăugare opțiune de ieșire din meniu
+        // TODO: să poată accepta doar y/n
+
         try {
             Database.connect();
 
@@ -35,66 +39,22 @@ public class Application {
             Client client = null;
             ClientView clientView = null;
             ClientController clientController = null;
+
             if (optiuneDeschidereMeniu == 2) {
                 client = creareCont();
                 optiuneDeschidereMeniu = 1;
             }
+
             if (optiuneDeschidereMeniu == 1) {
                 if (client == null) {
                     client = autentificare();
                 }
+
                 clientView = new ClientView();
                 clientController = new ClientController(client, clientView);
 
-                Integer optiuneUserAutentificat = MENIU.afiseazaOptiuniUser();
-                if (optiuneUserAutentificat == 1) {
-                    Contract contract = new Contract(clientController.getIdClient());
-                    ContractView contractView = new ContractView();
-                    ContractController contractController = new ContractController(contract, contractView);
-
-                    TipEveniment tipEveniment = alegeTipEveniment();
-                    CategorieEveniment categorieEveniment = alegeCategorieEveniment();
-                    String dataEveniment = alegeDataEveniment();
-
-                    Locatie locatie = alegeLocatie(dataEveniment);
-                    LocatieView locatieView = new LocatieView();
-                    LocatieController locatieController = new LocatieController(locatie, locatieView);
-
-                    Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
-
-                    Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti);
-                    EvenimentView evenimentView = new EvenimentView();
-                    EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
-
-                    evenimentController.getEveniment().insert();
-
-                    Pachet pachet = alegePachet(evenimentController.getEveniment());
-                    PachetView pachetView = new PachetView();
-                    PachetController pachetController = new PachetController(pachet, pachetView);
-
-                    String dataIncheiere = DateUtil.today();
-                    String observatii = adaugaObservatii();
-                    MetodaDePlata metodaDePlata = alegeMetodaDePlata();
-
-                    contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
-                    contractController.updateView();
-
-                    Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
-                }
-                if (optiuneUserAutentificat == 2) {
-                    System.out.println("Evenimente: ");
-                    assert client != null;
-                    vizualizareEvenimenteUser(client.getId());
-                }
-                if (optiuneUserAutentificat == 3) {
-                    assert client != null;
-                    schimbareParola(client.getId());
-                }
+                handleUserOptions(clientController);
             }
-
-            // TODO: implementează metodele de afișare modele din MVC
-            // TODO: fa meniul recursiv + adăugare opțiune de ieșire din meniu
-            // TODO: să poată accepta doar y/n
 
             Database.commit();
         } catch (Exception e) {
@@ -103,6 +63,61 @@ public class Application {
         } finally {
             Database.disconnect();
             SCANNER.close();
+        }
+    }
+
+    private static void handleUserOptions(ClientController clientController) {
+        Integer optiuneUserAutentificat = MENIU.afiseazaOptiuniUser();
+
+        switch (optiuneUserAutentificat) {
+            case 1:
+                handleCreateEvent(clientController);
+                break;
+            case 2:
+                System.out.println("Evenimente: ");
+                vizualizareEvenimenteUser(clientController.getClient().getId());
+                break;
+            case 3:
+                schimbareParola(clientController.getClient());
+                break;
+        }
+    }
+
+    private static void handleCreateEvent(ClientController clientController) {
+        try {
+            Contract contract = new Contract(clientController.getIdClient());
+            ContractView contractView = new ContractView();
+            ContractController contractController = new ContractController(contract, contractView);
+
+            TipEveniment tipEveniment = alegeTipEveniment();
+            CategorieEveniment categorieEveniment = alegeCategorieEveniment();
+            String dataEveniment = alegeDataEveniment();
+
+            Locatie locatie = alegeLocatie(dataEveniment);
+            LocatieView locatieView = new LocatieView();
+            LocatieController locatieController = new LocatieController(locatie, locatieView);
+
+            Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
+
+            Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti);
+            EvenimentView evenimentView = new EvenimentView();
+            EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
+
+            evenimentController.getEveniment().insert();
+
+            Pachet pachet = alegePachet(evenimentController.getEveniment());
+            PachetView pachetView = new PachetView();
+            PachetController pachetController = new PachetController(pachet, pachetView);
+
+            String dataIncheiere = DateUtil.today();
+            String observatii = adaugaObservatii();
+            MetodaDePlata metodaDePlata = alegeMetodaDePlata();
+
+            contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
+
+            Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -333,28 +348,28 @@ public class Application {
     }
 
     private static void schimbareParola(Client client) {
-        System.out.println("Introduceti vechea parola: ");
+        System.out.println("Introduceți vechea parolă: ");
         String parola = SCANNER.nextLine();
         if (client == null) {
-            System.out.println("Nu exista acest client!");
+            System.out.println("Nu există acest client!");
         }
         try {
+            assert client != null;
             if (!PasswordUtil.checkPassword(parola, client.getParola())) {
-                System.out.println("Parola gresita!");
+                System.out.println("Parolă greșită!");
             }
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Introduceti noua parola: ");
+        System.out.println("Introduceți noua parolă: ");
         String parolaNoua = SCANNER.nextLine();
-        if(parolaNoua==null || parolaNoua.length()<8){
-            System.out.println("Parola invalida!");
+        if (parolaNoua == null || parolaNoua.length() < 8) {
+            System.out.println("Parolă invalidă!");
         }
-        System.out.println("Confirmati noua parola: ");
+        System.out.println("Confirmați noua parolă: ");
         String parolaNouaConfirmare = SCANNER.nextLine();
-        if(!parolaNoua.equals(parolaNouaConfirmare)){
+        assert parolaNoua != null;
+        if (!parolaNoua.equals(parolaNouaConfirmare)) {
             System.out.println("Parolele nu corespund!");
         } else {
             try {
@@ -363,9 +378,8 @@ public class Application {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("Parola schimbata cu succes!");
+            System.out.println("Parolă schimbată cu succes!");
         }
-
     }
 
     private static Client creareCont() {
