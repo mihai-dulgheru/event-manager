@@ -109,8 +109,9 @@ public class Application {
             LocatieController locatieController = new LocatieController(locatie, locatieView);
 
             Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
+            String tematica = null;
 
-            Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti);
+            Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti, tematica);
             EvenimentView evenimentView = new EvenimentView();
             EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
 
@@ -257,7 +258,7 @@ public class Application {
         return nrParticipanti;
     }
 
-    private static Eveniment creareEveniment(TipEveniment tipEveniment, CategorieEveniment categorieEveniment, UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti) {
+    private static Eveniment creareEveniment(TipEveniment tipEveniment, CategorieEveniment categorieEveniment, UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti, String tematica) {
         EvenimentFactory factory = switch (tipEveniment) {
             case TipEveniment.BOTEZ -> new BotezFactory();
             case TipEveniment.CONCERT -> new ConcertFactory();
@@ -268,7 +269,7 @@ public class Application {
         };
         return switch (categorieEveniment) {
             case CategorieEveniment.CU_TEMATICA ->
-                    factory.createEvenimentCuTematica(idContract, idLocatie, dataEveniment, nrParticipanti);
+                    factory.createEvenimentCuTematica(idContract, idLocatie, dataEveniment, nrParticipanti, tematica);
             case CategorieEveniment.FARA_TEMATICA ->
                     factory.createEvenimentFaraTematica(idContract, idLocatie, dataEveniment, nrParticipanti);
         };

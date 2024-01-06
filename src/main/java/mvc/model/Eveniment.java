@@ -18,7 +18,6 @@ import java.util.UUID;
 public class Eveniment extends AbstractModel {
     static {
         try {
-            // TODO: adaugă tematică
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS evenimente" +
                     "(" +
                     "    id_eveniment    VARCHAR(36) PRIMARY KEY," +
@@ -27,6 +26,7 @@ public class Eveniment extends AbstractModel {
                     "    tip_eveniment   VARCHAR(255) NOT NULL," +
                     "    data_eveniment  DATE NOT NULL," +
                     "    nr_participanti INTEGER DEFAULT 0," +
+                    "    tematica        VARCHAR(255)," +
                     "    FOREIGN KEY (id_contract) REFERENCES contracte (id_contract)," +
                     "    FOREIGN KEY (id_locatie) REFERENCES locatii (id_locatie)" +
                     ")");
@@ -41,8 +41,9 @@ public class Eveniment extends AbstractModel {
     private TipEveniment tipEveniment;
     private String dataEveniment;
     private Integer nrParticipanti;
+    private String tematica;
 
-    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti) {
+    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti, String tematica) {
         this.id = UUID.randomUUID();
         this.idContract = idContract;
         this.idLocatie = idLocatie;
@@ -57,9 +58,10 @@ public class Eveniment extends AbstractModel {
         } else {
             throw new IllegalArgumentException("Numărul de participanți nu este valid!");
         }
+        this.tematica = tematica;
     }
 
-    private Eveniment(UUID id, UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti) {
+    private Eveniment(UUID id, UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti, String tematica) {
         this.id = id;
         this.idContract = idContract;
         this.idLocatie = idLocatie;
@@ -70,6 +72,7 @@ public class Eveniment extends AbstractModel {
         } else {
             throw new IllegalArgumentException("Numărul de participanți nu este valid!");
         }
+        this.tematica = tematica;
     }
 
     public static AbstractModel readOne(UUID id) throws SQLException {
@@ -110,8 +113,9 @@ public class Eveniment extends AbstractModel {
         TipEveniment tipEveniment = TipEveniment.valueOf(resultSet.getString(4));
         String dataEveniment = resultSet.getString(5);
         Integer nrParticipanti = resultSet.getInt(6);
+        String tematica = resultSet.getString(7);
 
-        return new Eveniment(idEveniment, idContract, idLocatie, tipEveniment, dataEveniment, nrParticipanti);
+        return new Eveniment(idEveniment, idContract, idLocatie, tipEveniment, dataEveniment, nrParticipanti, tematica);
     }
 
     public static void updateOrInsert(Eveniment eveniment) {
@@ -149,7 +153,7 @@ public class Eveniment extends AbstractModel {
 
     @Override
     public void insert() throws SQLException {
-        String insertString = "INSERT INTO evenimente VALUES (?, ?, ?, ?, ?, ?)";
+        String insertString = "INSERT INTO evenimente VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement insertEvent = Database.connection.prepareStatement(insertString);
 
         insertEvent.setString(1, this.id.toString());
@@ -158,21 +162,23 @@ public class Eveniment extends AbstractModel {
         insertEvent.setString(4, this.tipEveniment.toString());
         insertEvent.setString(5, this.dataEveniment);
         insertEvent.setInt(6, this.nrParticipanti);
+        insertEvent.setString(7, this.tematica);
 
         insertEvent.executeUpdate();
     }
 
     @Override
     public void update() throws SQLException {
-        String updateString = "UPDATE evenimente SET id_contract = ?, id_locatie = ?, tip_eveniment = ?, data_eveniment = ?, nr_participanti = ? WHERE id_eveniment = ?";
+        String updateString = "UPDATE evenimente SET id_contract = ?, id_locatie = ?, tip_eveniment = ?, data_eveniment = ?, nr_participanti = ?, tematica = ? WHERE id_eveniment = ?";
         PreparedStatement updateEvent = Database.connection.prepareStatement(updateString);
 
         updateEvent.setString(1, this.idContract.toString());
         updateEvent.setString(2, this.idLocatie.toString());
         updateEvent.setString(3, this.tipEveniment.toString());
         updateEvent.setString(4, this.dataEveniment);
-        updateEvent.setString(5, this.id.toString());
-        updateEvent.setInt(6, this.nrParticipanti);
+        updateEvent.setInt(5, this.nrParticipanti);
+        updateEvent.setString(6, this.tematica);
+        updateEvent.setString(7, this.id.toString());
 
         updateEvent.executeUpdate();
     }
@@ -231,6 +237,14 @@ public class Eveniment extends AbstractModel {
         }
     }
 
+    public String getTematica() {
+        return tematica;
+    }
+
+    public void setTematica(String tematica) {
+        this.tematica = tematica;
+    }
+
     @Override
     public String toString() {
         return "Eveniment{" +
@@ -240,6 +254,7 @@ public class Eveniment extends AbstractModel {
                 ", tipEveniment=" + tipEveniment +
                 ", dataEveniment='" + dataEveniment + '\'' +
                 ", nrParticipanti=" + nrParticipanti +
+                ", tematica='" + tematica + '\'' +
                 '}';
     }
 }

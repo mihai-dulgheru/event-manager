@@ -5,8 +5,8 @@ import enums.TipEveniment;
 import java.util.UUID;
 
 public class NuntaCuTematica extends EvenimentCuTematica {
-    public NuntaCuTematica(UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti) {
-        super(idContract, idLocatie, TipEveniment.NUNTA, dataEveniment, nrParticipanti);
+    public NuntaCuTematica(UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti, String tematica) {
+        super(idContract, idLocatie, TipEveniment.NUNTA, dataEveniment, nrParticipanti, tematica);
     }
 
     @Override

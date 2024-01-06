@@ -4,8 +4,8 @@ import java.util.UUID;
 
 public class PetrecereAbsolvireFactory implements EvenimentFactory {
     @Override
-    public EvenimentCuTematica createEvenimentCuTematica(UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti) {
-        return new PetrecereAbsolvireCuTematica(idContract, idLocatie, dataEveniment, nrParticipanti);
+    public EvenimentCuTematica createEvenimentCuTematica(UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti, String tematica) {
+        return new PetrecereAbsolvireCuTematica(idContract, idLocatie, dataEveniment, nrParticipanti, tematica);
     }
 
     @Override
