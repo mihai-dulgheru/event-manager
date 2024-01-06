@@ -332,8 +332,40 @@ public class Application {
         }
     }
 
-    private static void schimbareParola(UUID id) {
-        // TODO
+    private static void schimbareParola(Client client) {
+        System.out.println("Introduceti vechea parola: ");
+        String parola = SCANNER.nextLine();
+        if (client == null) {
+            System.out.println("Nu exista acest client!");
+        }
+        try {
+            if (!PasswordUtil.checkPassword(parola, client.getParola())) {
+                System.out.println("Parola gresita!");
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Introduceti noua parola: ");
+        String parolaNoua = SCANNER.nextLine();
+        if(parolaNoua==null || parolaNoua.length()<8){
+            System.out.println("Parola invalida!");
+        }
+        System.out.println("Confirmati noua parola: ");
+        String parolaNouaConfirmare = SCANNER.nextLine();
+        if(!parolaNoua.equals(parolaNouaConfirmare)){
+            System.out.println("Parolele nu corespund!");
+        } else {
+            try {
+                client.setParola(parolaNouaConfirmare);
+                client.update();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Parola schimbata cu succes!");
+        }
+
     }
 
     private static Client creareCont() {
