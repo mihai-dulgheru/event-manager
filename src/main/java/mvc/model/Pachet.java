@@ -120,7 +120,6 @@ public class Pachet extends AbstractModel {
         insertPackage.setString(4, this.detaliiPachet);
 
         insertPackage.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -134,7 +133,6 @@ public class Pachet extends AbstractModel {
         updatePackage.setString(4, this.id.toString());
 
         updatePackage.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -145,7 +143,6 @@ public class Pachet extends AbstractModel {
         deletePackage.setString(1, this.id.toString());
 
         deletePackage.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     public UUID getId() {
@@ -226,8 +223,7 @@ public class Pachet extends AbstractModel {
             try {
                 Eveniment eveniment = (Eveniment) Eveniment.readOne(this.idEveniment);
                 boolean isBasic = this.serviciiSuplimentare.isEmpty();
-                this.numePachet = String.format("pachet_%s_%s", eveniment.getTipEveniment().toString().toLowerCase(),
-                        isBasic ? "basic" : "custom");
+                this.numePachet = String.format("pachet_%s_%s", eveniment.getTipEveniment().toString().toLowerCase(), isBasic ? "basic" : "custom");
                 if (isBasic) {
                     this.detaliiPachet = "";
                 } else {

@@ -57,8 +57,7 @@ public class Contract extends AbstractModel {
         this.metodaDePlata = metodaDePlata;
     }
 
-    private Contract(UUID id, UUID idClient, String dataIncheiere, Double costTotal, Moneda moneda, String observatii,
-                     MetodaDePlata metodaDePlata) {
+    private Contract(UUID id, UUID idClient, String dataIncheiere, Double costTotal, Moneda moneda, String observatii, MetodaDePlata metodaDePlata) {
         this.id = id;
         this.idClient = idClient;
         this.dataIncheiere = dataIncheiere;
@@ -150,7 +149,6 @@ public class Contract extends AbstractModel {
         insertContract.setString(7, this.metodaDePlata.toString());
 
         insertContract.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -167,7 +165,6 @@ public class Contract extends AbstractModel {
         updateContract.setString(7, this.id.toString());
 
         updateContract.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -178,7 +175,6 @@ public class Contract extends AbstractModel {
         deleteContract.setString(1, this.id.toString());
 
         deleteContract.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     public UUID getId() {

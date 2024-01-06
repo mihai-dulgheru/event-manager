@@ -30,15 +30,14 @@ public class Application {
     public static void start() {
         // TODO: implementează metodele de afișare modele din MVC
         // TODO: fa meniul recursiv + adăugare opțiune de ieșire din meniu
-        // TODO: să poată accepta doar y/n
 
         try {
             Database.connect();
 
             Integer optiuneDeschidereMeniu = MENIU.deschidereAplicatie();
             Client client = null;
-            ClientView clientView = null;
-            ClientController clientController = null;
+            ClientView clientView;
+            ClientController clientController;
 
             if (optiuneDeschidereMeniu == 2) {
                 client = creareCont();
@@ -266,34 +265,74 @@ public class Application {
         TipEveniment tipEveniment = eveniment.getTipEveniment();
         CatalogServicii catalogServicii = CatalogServicii.getInstance();
         Pachet.PachetBuilder pachetBuilder = new Pachet.PachetBuilder(eveniment.getId());
+
         System.out.println("Pachetul dumneavoastră conține următoarele servicii: ");
         List<AbstractModel> serviciiDefault = Serviciu.readServiciiDefault();
-        for (int i = 0; i < serviciiDefault.size(); i++) {
-            System.out.printf("%d. %s%n", i + 1, ((Serviciu) (serviciiDefault.get(i))).getNumeServiciu());
-        }
-        System.out.println("Doriți să adăugați un serviciu? (y/n)");
-        String answer = SCANNER.nextLine();
-        while (answer.equals("y")) {
-            System.out.println("Servicii disponibile: ");
-            catalogServicii.afiseazaServicii(tipEveniment);
-            System.out.println("Alegeți serviciul: ");
-            int option;
-            try {
-                option = Integer.parseInt(SCANNER.nextLine());
-                if (option < 1 || option >= catalogServicii.getCatalog().get(tipEveniment).size() + 1) {
-                    System.out.println("Opțiunea nu există!");
-                    continue;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Opțiunea nu este un număr!");
+        afiseazaServicii(serviciiDefault);
+
+        int semafor = 0;
+        while (semafor == 0) {
+            System.out.println("Doriți să adăugați un serviciu? (y/n)");
+            String answer = SCANNER.nextLine();
+
+            if (!isAnswerValid(answer)) {
+                System.out.println("Răspuns invalid!");
                 continue;
             }
-            pachetBuilder.addServiciu(catalogServicii.getCatalog().get(tipEveniment).get(option - 1));
-            System.out.println("Serviciul a fost adăugat cu succes!");
-            System.out.println("Doriți să adăugați un serviciu? (y/n)");
-            answer = SCANNER.nextLine();
+
+            if (isNegativeAnswer(answer)) {
+                semafor = 1;
+            }
+
+            if (isAffirmativeAnswer(answer)) {
+                adaugaServiciu(pachetBuilder, catalogServicii, tipEveniment);
+            }
         }
+
         return pachetBuilder.build();
+    }
+
+    private static void afiseazaServicii(List<AbstractModel> servicii) {
+        for (int i = 0; i < servicii.size(); i++) {
+            System.out.printf("%d. %s%n", i + 1, ((Serviciu) servicii.get(i)).getNumeServiciu());
+        }
+    }
+
+    private static boolean isAnswerValid(String answer) {
+        return isNegativeAnswer(answer) || isAffirmativeAnswer(answer);
+    }
+
+    private static boolean isNegativeAnswer(String answer) {
+        return answer.equalsIgnoreCase("n") || answer.equalsIgnoreCase("no");
+    }
+
+    private static boolean isAffirmativeAnswer(String answer) {
+        return answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("yes");
+    }
+
+    private static void adaugaServiciu(Pachet.PachetBuilder pachetBuilder, CatalogServicii catalogServicii, TipEveniment tipEveniment) {
+        System.out.println("Servicii disponibile: ");
+        catalogServicii.afiseazaServicii(tipEveniment);
+        System.out.println("Alegeți serviciul: ");
+
+        int option;
+        try {
+            option = Integer.parseInt(SCANNER.nextLine());
+            if (isOptionInvalid(option, catalogServicii, tipEveniment)) {
+                System.out.println("Opțiunea nu există!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Opțiunea nu este un număr!");
+            return;
+        }
+
+        pachetBuilder.addServiciu(catalogServicii.getCatalog().get(tipEveniment).get(option - 1));
+        System.out.println("Serviciul a fost adăugat cu succes!");
+    }
+
+    private static boolean isOptionInvalid(int option, CatalogServicii catalogServicii, TipEveniment tipEveniment) {
+        return option < 1 || option >= catalogServicii.getCatalog().get(tipEveniment).size() + 1;
     }
 
     private static String adaugaObservatii() {
@@ -384,15 +423,7 @@ public class Application {
 
     private static Client creareCont() {
         ClientProxy proxy = new ClientProxy();
-        String numeClient = null;
-        String prenumeClient = null;
-        String cnp = null;
-        String adresa = null;
-        String email = null;
-        String telefon = null;
-        String username = null;
-        String parola = null;
-        String confirmareParola = null;
+        String numeClient, prenumeClient, cnp, adresa, email, telefon, username, parola, confirmareParola;
         do {
             System.out.println("Introduceți numele: ");
             numeClient = SCANNER.nextLine();
@@ -430,7 +461,10 @@ public class Application {
             if (!email.contains("@")) {
                 System.out.println("Email-ul trebuie să conțină @!");
             }
-        } while (email.length() < 3 || !email.contains("@"));
+            if (Client.findByEmail(email) != null) {
+                System.out.println("Email-ul există deja!");
+            }
+        } while (email.length() < 3 || !email.contains("@") || Client.findByEmail(email) != null);
         do {
             System.out.println("Introduceți numărul de telefon: ");
             telefon = SCANNER.nextLine();

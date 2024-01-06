@@ -118,7 +118,6 @@ public class Locatie extends AbstractModel {
         preparedStatement.setInt(4, cost);
 
         preparedStatement.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -132,7 +131,6 @@ public class Locatie extends AbstractModel {
         preparedStatement.setString(4, id.toString());
 
         preparedStatement.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -143,7 +141,6 @@ public class Locatie extends AbstractModel {
         preparedStatement.setString(1, id.toString());
 
         preparedStatement.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     public UUID getId() {

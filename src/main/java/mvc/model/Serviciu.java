@@ -119,7 +119,6 @@ public class Serviciu extends AbstractModel {
         insertService.setString(6, this.tipEveniment);
 
         insertService.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -141,7 +140,6 @@ public class Serviciu extends AbstractModel {
         updateService.setString(6, this.id.toString());
 
         updateService.executeUpdate();
-        System.out.println("1 row affected");
     }
 
 
@@ -153,7 +151,6 @@ public class Serviciu extends AbstractModel {
         deleteService.setString(1, this.id.toString());
 
         deleteService.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     public UUID getId() {

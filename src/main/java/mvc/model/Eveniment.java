@@ -41,8 +41,7 @@ public class Eveniment extends AbstractModel {
     private String dataEveniment;
     private Integer nrParticipanti;
 
-    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment,
-                     Integer nrParticipanti) {
+    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti) {
         this.id = UUID.randomUUID();
         this.idContract = idContract;
         this.idLocatie = idLocatie;
@@ -59,8 +58,7 @@ public class Eveniment extends AbstractModel {
         }
     }
 
-    private Eveniment(UUID id, UUID idContract, UUID idLocatie, TipEveniment tipEveniment,
-                      String dataEveniment, Integer nrParticipanti) {
+    private Eveniment(UUID id, UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti) {
         this.id = id;
         this.idContract = idContract;
         this.idLocatie = idLocatie;
@@ -176,7 +174,6 @@ public class Eveniment extends AbstractModel {
         updateEvent.setInt(6, this.nrParticipanti);
 
         updateEvent.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     @Override
@@ -187,7 +184,6 @@ public class Eveniment extends AbstractModel {
         deleteEvent.setString(1, this.id.toString());
 
         deleteEvent.executeUpdate();
-        System.out.println("1 row affected");
     }
 
     public UUID getId() {
