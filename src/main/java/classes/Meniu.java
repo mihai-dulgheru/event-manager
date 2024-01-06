@@ -8,7 +8,7 @@ public class Meniu {
     private static final Scanner SCANNER = new Scanner(System.in);
     private static volatile Meniu instance;
 
-    Meniu() {
+    private Meniu() {
 
     }
 
@@ -24,11 +24,11 @@ public class Meniu {
     }
 
     public Integer deschidereAplicatie() {
-        Integer option;
+        int option;
 
         System.out.println("Bun venit!");
-        System.out.println("1. Autentificare");
-        System.out.println("2. Creare cont");
+        System.out.println("1. Creare cont");
+        System.out.println("2. Autentificare");
         System.out.println("3. Ieșire");
 
         try {
@@ -46,10 +46,10 @@ public class Meniu {
     }
 
     public Integer afiseazaOptiuniUser() {
-        Integer option;
+        int option;
 
         System.out.println("Introduceți opțiunea: ");
-        System.out.println("1. Crează eveniment");
+        System.out.println("1. Creează eveniment");
         System.out.println("2. Vizualizează evenimentele");
         System.out.println("3. Schimbă parola");
         System.out.println("4. Ieșire");

@@ -25,23 +25,20 @@ import java.util.*;
  */
 public class Application {
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static final Meniu MENIU = new Meniu();
+    private static final Meniu MENIU = Meniu.getInstance();
+    private static Client client = null;
 
     public static void start() {
         try {
             Database.connect();
 
             Integer optiuneDeschidereMeniu = MENIU.deschidereAplicatie();
-            Client client = null;
-            ClientView clientView;
-            ClientController clientController;
-
-            if (optiuneDeschidereMeniu == 2) {
+            if (optiuneDeschidereMeniu == 1) {
                 client = creareCont();
-                optiuneDeschidereMeniu = 1;
+                optiuneDeschidereMeniu = 2;
             }
 
-            if (optiuneDeschidereMeniu == 1) {
+            if (optiuneDeschidereMeniu == 2) {
                 if (client == null) {
                     client = autentificare();
                     while (client == null) {
@@ -49,9 +46,8 @@ public class Application {
                     }
                 }
 
-                clientView = new ClientView();
-                clientController = new ClientController(client, clientView);
-
+                ClientView clientView = new ClientView();
+                ClientController clientController = new ClientController(client, clientView);
 
                 handleUserOptions(clientController);
             }
@@ -393,7 +389,7 @@ public class Application {
             System.out.println("Id-ul clientului nu este valid!");
         } else {
             try {
-                List<AbstractModel> contracts = new ArrayList<>(Contract.readContracteByIdClient(id));
+                List<AbstractModel> contracts = Contract.readContracteByIdClient(id);
                 int i = 1;
 
                 for (AbstractModel abstractModel : contracts) {
