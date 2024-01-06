@@ -38,4 +38,8 @@ public class ContractController implements ViewUpdater {
         model.setObservatii(observatii);
         model.setMetodaDePlata(metodaDePlata);
     }
+
+    public Contract getContract() {
+        return this.model;
+    }
 }

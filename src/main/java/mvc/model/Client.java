@@ -51,7 +51,8 @@ public class Client extends AbstractModel implements IAccountCreation {
         this.id = UUID.randomUUID();
     }
 
-    private Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private Client(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon,
+                   String username, String parola) throws NoSuchAlgorithmException, InvalidKeySpecException {
         this();
         this.numeClient = numeClient;
         this.prenumeClient = prenumeClient;
@@ -63,7 +64,8 @@ public class Client extends AbstractModel implements IAccountCreation {
         this.parola = PasswordUtil.hashPassword(parola);
     }
 
-    private Client(UUID id, String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) {
+    private Client(UUID id, String numeClient, String prenumeClient, String cnp, String adresa, String email,
+                   String telefon, String username, String parola) {
         this.id = id;
         this.numeClient = numeClient;
         this.prenumeClient = prenumeClient;
@@ -122,6 +124,24 @@ public class Client extends AbstractModel implements IAccountCreation {
                 return null;
             }
             return (Client) load(rs);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void updateOrInsert(Client client) {
+        try {
+            String selectString = "SELECT * FROM clienti WHERE id_client = ?";
+            PreparedStatement selectClient = Database.connection.prepareStatement(selectString);
+
+            selectClient.setString(1, client.id.toString());
+
+            ResultSet rs = selectClient.executeQuery();
+            if (!rs.next()) {
+                client.insert();
+            } else {
+                client.update();
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -264,7 +284,8 @@ public class Client extends AbstractModel implements IAccountCreation {
     }
 
     @Override
-    public Client createAccount(String numeClient, String prenumeClient, String cnp, String adresa, String email, String telefon, String username, String parola) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public Client createAccount(String numeClient, String prenumeClient, String cnp, String adresa, String email,
+                                String telefon, String username, String parola) throws NoSuchAlgorithmException, InvalidKeySpecException {
         return new Client(numeClient, prenumeClient, cnp, adresa, email, telefon, username, parola);
     }
 }

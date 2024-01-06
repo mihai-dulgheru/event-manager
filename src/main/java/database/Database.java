@@ -1,5 +1,6 @@
 package database;
 
+import classes.ServiciiPachet;
 import designPatterns.proxy.ClientProxy;
 import designPatterns.proxy.IAccountCreation;
 import enums.MetodaDePlata;
@@ -14,6 +15,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+import java.util.UUID;
 
 public final class Database {
     public static Connection connection;
@@ -57,8 +60,25 @@ public final class Database {
         }
     }
 
+    public static void clear() {
+        try {
+            statement.executeUpdate("DROP TABLE IF EXISTS servicii_pachet");
+            statement.executeUpdate("DROP TABLE IF EXISTS pachete");
+            statement.executeUpdate("DROP TABLE IF EXISTS evenimente");
+            statement.executeUpdate("DROP TABLE IF EXISTS contracte");
+            statement.executeUpdate("DROP TABLE IF EXISTS locatii");
+            statement.executeUpdate("DROP TABLE IF EXISTS servicii");
+            statement.executeUpdate("DROP TABLE IF EXISTS clienti");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void populate() {
         try {
+            Database.connect();
+            Database.clear();
+
             Client[] clients = getClients();
 
             for (Client client : clients) {
@@ -177,8 +197,13 @@ public final class Database {
             for (Pachet pachet : packets) {
                 pachet.insert();
             }
+
+            Database.commit();
         } catch (Exception e) {
+            Database.rollback();
             throw new RuntimeException(e);
+        } finally {
+            Database.disconnect();
         }
     }
 
@@ -190,5 +215,18 @@ public final class Database {
                 proxy.createAccount("Ionescu", "Elena", "5010101408136", "Aleea Albastră, Nr. 8, Timișoara", "elena.ionescu@email.com", "+40741234567", "elena_i", "parola789"),
                 proxy.createAccount("Vasilescu", "Adrian-Marian", "5010101408135", "Bulevardul Unirii, Nr. 21, Iași", "adrian.vasilescu@email.com", "+40751234567", "adrian_v", "parolaABC"),
                 proxy.createAccount("Radu", "Cristina-Andreea", "5010101408134", "Strada Soarelui, Nr. 17, Galați", "cristina.radu@email.com", "+40761234567", "cristina_r", "parolaDEF"),};
+    }
+
+    public static void saveAll(Client client, Contract contract, Eveniment eveniment, Pachet pachet) {
+        Client.updateOrInsert(client);
+        Contract.updateOrInsert(contract);
+        Eveniment.updateOrInsert(eveniment);
+        List<Serviciu> servicii = pachet.getServicii();
+        UUID idPachet = pachet.getId();
+        for (Serviciu serviciu : servicii) {
+            ServiciiPachet serviciiPachet = new ServiciiPachet(idPachet, serviciu.getId());
+            serviciiPachet.save();
+        }
+        Pachet.updateOrInsert(pachet);
     }
 }

@@ -66,8 +66,8 @@ public class Application {
             contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
             contractController.updateView();
 
-            // TODO: salvează toate colecțiile în baza de date
-            // TODO: citește toate colecțiile din baza de date la pornire
+            Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
+
             // TODO: adaugă metoda de creare cont
             // TODO: adaugă meniu cu opțiuni atât pentru un user neautentificat, cât și pentru unul autentificat
             // TODO: implementează metodele de afișare modele din MVC

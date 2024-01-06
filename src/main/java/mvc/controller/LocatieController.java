@@ -26,4 +26,8 @@ public class LocatieController implements ViewUpdater {
     public void updateView() {
         view.print(model);
     }
+
+    public Locatie getLocatie() {
+        return this.model;
+    }
 }

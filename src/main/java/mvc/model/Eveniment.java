@@ -41,7 +41,8 @@ public class Eveniment extends AbstractModel {
     private String dataEveniment;
     private Integer nrParticipanti;
 
-    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment, Integer nrParticipanti) {
+    public Eveniment(UUID idContract, UUID idLocatie, TipEveniment tipEveniment, String dataEveniment,
+                     Integer nrParticipanti) {
         this.id = UUID.randomUUID();
         this.idContract = idContract;
         this.idLocatie = idLocatie;
@@ -102,6 +103,24 @@ public class Eveniment extends AbstractModel {
         Integer nrParticipanti = resultSet.getInt(6);
 
         return new Eveniment(idEveniment, idContract, idLocatie, tipEveniment, dataEveniment, nrParticipanti);
+    }
+
+    public static void updateOrInsert(Eveniment eveniment) {
+        try {
+            String selectString = "SELECT * FROM evenimente WHERE id_eveniment = ?";
+            PreparedStatement selectEvent = Database.connection.prepareStatement(selectString);
+
+            selectEvent.setString(1, eveniment.id.toString());
+
+            ResultSet rs = selectEvent.executeQuery();
+            if (rs.next()) {
+                eveniment.update();
+            } else {
+                eveniment.insert();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Boolean isValid(Integer nrParticipanti) {

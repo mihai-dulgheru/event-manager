@@ -22,4 +22,8 @@ public class ClientController implements ViewUpdater {
     public void updateView() {
         view.print(model);
     }
+
+    public Client getClient() {
+        return this.model;
+    }
 }

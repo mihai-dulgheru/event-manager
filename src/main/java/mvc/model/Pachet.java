@@ -91,6 +91,24 @@ public class Pachet extends AbstractModel {
         return new Pachet(id, idEveniment, numePachet, detaliiPachet);
     }
 
+    public static void updateOrInsert(Pachet pachet) {
+        try {
+            String selectString = "SELECT * FROM pachete WHERE id_pachet = ?";
+            PreparedStatement selectPackage = Database.connection.prepareStatement(selectString);
+
+            selectPackage.setString(1, pachet.id.toString());
+
+            ResultSet rs = selectPackage.executeQuery();
+            if (rs.next()) {
+                pachet.update();
+            } else {
+                pachet.insert();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void insert() throws SQLException {
         String insertString = "INSERT INTO pachete VALUES (?, ?, ?, ?)";
@@ -208,7 +226,8 @@ public class Pachet extends AbstractModel {
             try {
                 Eveniment eveniment = (Eveniment) Eveniment.readOne(this.idEveniment);
                 boolean isBasic = this.serviciiSuplimentare.isEmpty();
-                this.numePachet = String.format("pachet_%s_%s", eveniment.getTipEveniment().toString().toLowerCase(), isBasic ? "basic" : "custom");
+                this.numePachet = String.format("pachet_%s_%s", eveniment.getTipEveniment().toString().toLowerCase(),
+                        isBasic ? "basic" : "custom");
                 if (isBasic) {
                     this.detaliiPachet = "";
                 } else {

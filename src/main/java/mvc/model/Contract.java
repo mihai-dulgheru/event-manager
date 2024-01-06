@@ -57,7 +57,8 @@ public class Contract extends AbstractModel {
         this.metodaDePlata = metodaDePlata;
     }
 
-    private Contract(UUID id, UUID idClient, String dataIncheiere, Double costTotal, Moneda moneda, String observatii, MetodaDePlata metodaDePlata) {
+    private Contract(UUID id, UUID idClient, String dataIncheiere, Double costTotal, Moneda moneda, String observatii,
+                     MetodaDePlata metodaDePlata) {
         this.id = id;
         this.idClient = idClient;
         this.dataIncheiere = dataIncheiere;
@@ -100,7 +101,26 @@ public class Contract extends AbstractModel {
         return new Contract(id, idClient, dataIncheiere, costTotal, moneda, observatii, metodaDePlata);
     }
 
+    public static void updateOrInsert(Contract contract) {
+        try {
+            String selectString = "SELECT * FROM contracte WHERE id_contract = ?";
+            PreparedStatement selectContract = Database.connection.prepareStatement(selectString);
+
+            selectContract.setString(1, contract.id.toString());
+
+            ResultSet rs = selectContract.executeQuery();
+            if (!rs.next()) {
+                contract.insert();
+            } else {
+                contract.update();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
+
     public void insert() throws SQLException {
         String insertString = "INSERT INTO contracte VALUES (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement insertContract = Database.connection.prepareStatement(insertString);
