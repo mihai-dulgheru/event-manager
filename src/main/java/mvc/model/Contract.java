@@ -89,6 +89,22 @@ public class Contract extends AbstractModel {
         return contracts;
     }
 
+    public static List<AbstractModel> readContracteByIdClient(UUID id_client) throws SQLException {
+        String selectString = "SELECT * FROM contracte where id_client = ?";
+        PreparedStatement selectContract = Database.connection.prepareStatement(selectString);
+
+        selectContract.setString(1, id_client.toString());
+
+        ResultSet rs = selectContract.executeQuery();
+
+        List<AbstractModel> contracts = new ArrayList<>();
+        while (rs.next()) {
+            contracts.add(load(rs));
+        }
+
+        return contracts;
+    }
+
     protected static AbstractModel load(ResultSet resultSet) throws SQLException {
         UUID id = UUID.fromString(resultSet.getString(1));
         UUID idClient = UUID.fromString(resultSet.getString(2));

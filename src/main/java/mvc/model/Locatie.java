@@ -68,6 +68,16 @@ public class Locatie extends AbstractModel {
         return locations;
     }
 
+    public static AbstractModel readDenumireLocatie(UUID id_locatie) throws SQLException {
+        String selectString = "SELECT * FROM locatii where id_locatie = ?";
+        PreparedStatement selectLocatie = Database.connection.prepareStatement(selectString);
+
+        selectLocatie.setString(1, id_locatie.toString());
+
+        ResultSet rs = selectLocatie.executeQuery();
+        return load(rs);
+    }
+
     protected static AbstractModel load(ResultSet resultSet) throws SQLException {
         UUID idLocatie = UUID.fromString(resultSet.getString(1));
         String denumire = resultSet.getString(2);

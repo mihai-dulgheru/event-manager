@@ -16,10 +16,7 @@ import util.PasswordUtil;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Facade
@@ -31,40 +28,63 @@ public class Application {
         try {
             Database.connect();
 
-            Client client = autentificare();
-            ClientView clientView = new ClientView();
-            ClientController clientController = new ClientController(client, clientView);
+            Meniu meniu = new Meniu();
 
-            Contract contract = new Contract(clientController.getIdClient());
-            ContractView contractView = new ContractView();
-            ContractController contractController = new ContractController(contract, contractView);
+            Integer optiuneDeschidereMeniu = meniu.deschidereAplicatie();
+            Client client = null;
+            ClientView clientView = null;
+            ClientController clientController = null;
+            if (optiuneDeschidereMeniu == 2) {
+                creareCont();
+                optiuneDeschidereMeniu = 1;
+            }
+            if (optiuneDeschidereMeniu == 1) {
+                client = autentificare();
+                clientView = new ClientView();
+                clientController = new ClientController(client, clientView);
 
-            TipEveniment tipEveniment = alegeTipEveniment();
-            CategorieEveniment categorieEveniment = alegeCategorieEveniment();
-            String dataEveniment = alegeDataEveniment();
+                Integer optiuneUserAutentificat = meniu.afiseazaOptiuniUser();
+                if (optiuneUserAutentificat == 1) {
+                    Contract contract = new Contract(clientController.getIdClient());
+                    ContractView contractView = new ContractView();
+                    ContractController contractController = new ContractController(contract, contractView);
 
-            Locatie locatie = alegeLocatie(dataEveniment);
-            LocatieView locatieView = new LocatieView();
-            LocatieController locatieController = new LocatieController(locatie, locatieView);
+                    TipEveniment tipEveniment = alegeTipEveniment();
+                    CategorieEveniment categorieEveniment = alegeCategorieEveniment();
+                    String dataEveniment = alegeDataEveniment();
 
-            Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
+                    Locatie locatie = alegeLocatie(dataEveniment);
+                    LocatieView locatieView = new LocatieView();
+                    LocatieController locatieController = new LocatieController(locatie, locatieView);
 
-            Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti);
-            EvenimentView evenimentView = new EvenimentView();
-            EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
+                    Integer nrParticipanti = alegeNrParticipanti(locatieController.getCapacitateLocatie());
 
-            evenimentController.getEveniment().insert();
+                    Eveniment eveniment = creareEveniment(tipEveniment, categorieEveniment, contractController.getIdContract(), locatieController.getIdLocatie(), dataEveniment, nrParticipanti);
+                    EvenimentView evenimentView = new EvenimentView();
+                    EvenimentController evenimentController = new EvenimentController(eveniment, evenimentView);
 
-            Pachet pachet = alegePachet(evenimentController.getEveniment());
-            PachetView pachetView = new PachetView();
-            PachetController pachetController = new PachetController(pachet, pachetView);
+                    evenimentController.getEveniment().insert();
 
-            String dataIncheiere = DateUtil.today();
-            String observatii = adaugaObservatii();
-            MetodaDePlata metodaDePlata = alegeMetodaDePlata();
+                    Pachet pachet = alegePachet(evenimentController.getEveniment());
+                    PachetView pachetView = new PachetView();
+                    PachetController pachetController = new PachetController(pachet, pachetView);
 
-            contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
-            contractController.updateView();
+                    String dataIncheiere = DateUtil.today();
+                    String observatii = adaugaObservatii();
+                    MetodaDePlata metodaDePlata = alegeMetodaDePlata();
+
+                    contractController.updateContract(dataIncheiere, pachetController.getPachet(), observatii, metodaDePlata);
+                    contractController.updateView();
+                }
+                if (optiuneUserAutentificat == 2) {
+                    System.out.println("Evenimente: ");
+                    vizualizareEvenimenteUser(client.getId());
+                }
+                if (optiuneUserAutentificat == 3) {
+                    schimbareParola(client.getId());
+                }
+            }
+
 
             Database.saveAll(clientController.getClient(), contractController.getContract(), evenimentController.getEveniment(), pachetController.getPachet());
 
@@ -282,4 +302,37 @@ public class Application {
         }
         return (MetodaDePlata) metodaDePlataMap.get(option);
     }
+
+    private static void vizualizareEvenimenteUser(UUID id) {
+        if(id==null || id.toString().isEmpty()){
+            System.out.println("Id-ul clientului nu este valid!");
+        } else {
+            try {
+                List<AbstractModel> contracts = new ArrayList<>(Contract.readContracteByIdClient(id));
+                int i = 1;
+
+                for(AbstractModel abstractModel:contracts){
+                    Contract contract=(Contract) abstractModel;
+                    List<AbstractModel> evenimente = new ArrayList<>();
+                    evenimente.add(Eveniment.readEvenimenteByIdContract(contract.getId()));
+                    for(AbstractModel abstractModel1:evenimente){
+                        Eveniment eveniment=(Eveniment) abstractModel1;
+                        AbstractModel abstractModelLocatie = Locatie.readDenumireLocatie(eveniment.getIdLocatie());
+                        Locatie locatie = (Locatie) abstractModelLocatie;
+                        System.out.println(i + ". " +  eveniment.getTipEveniment() + ": " + locatie.getDenumire() + " | " + eveniment.getDataEveniment() + " | " + eveniment.getNrParticipanti() + " participanti");
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private static void schimbareParola(UUID id) {
+    }
+
+    private static void creareCont() {
+    }
+
+
 }
