@@ -46,7 +46,7 @@ public class Application {
             if (optiuneDeschidereMeniu == 1) {
                 if (client == null) {
                     client = autentificare();
-                    while(client==null){
+                    while (client == null) {
                         client = autentificare();
                     }
                 }
@@ -58,7 +58,7 @@ public class Application {
                 handleUserOptions(clientController);
             }
             if (optiuneDeschidereMeniu == 3) {
-               System.exit(0);
+                System.exit(0);
             }
 
             Database.commit();
