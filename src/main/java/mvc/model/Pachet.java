@@ -2,6 +2,7 @@ package mvc.model;
 
 import abstractClasses.AbstractModel;
 import database.Database;
+import interfaces.Builder;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -192,7 +193,7 @@ public class Pachet extends AbstractModel {
                 '}';
     }
 
-    public static class PachetBuilder {
+    public static class PachetBuilder implements Builder {
         private final UUID idEveniment;
         private final List<Serviciu> serviciiDefault = new ArrayList<>();
         private final List<Serviciu> serviciiSuplimentare = new ArrayList<>();
@@ -214,11 +215,13 @@ public class Pachet extends AbstractModel {
             }
         }
 
+        @Override
         public PachetBuilder addServiciu(Serviciu serviciu) {
             this.serviciiSuplimentare.add(serviciu);
             return this;
         }
 
+        @Override
         public Pachet build() {
             try {
                 Eveniment eveniment = (Eveniment) Eveniment.readOne(this.idEveniment);
