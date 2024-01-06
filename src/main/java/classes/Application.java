@@ -74,7 +74,7 @@ public class Application {
                 handleUserOptions(clientController);
                 break;
             case 2:
-                handleViewEvents(clientController.getClient().getId());
+                handleViewEvents(clientController.getIdClient());
                 handleUserOptions(clientController);
                 break;
             case 3:
@@ -391,15 +391,15 @@ public class Application {
         return (MetodaDePlata) metodaDePlataMap.get(option);
     }
 
-    private static void handleViewEvents(UUID id) {
+    private static Map<Integer, Eveniment> handleViewEvents(UUID id) {
         System.out.println("Evenimente: ");
+        Map<Integer, Eveniment> evenimenteMap = new HashMap<>();
         if (id == null || id.toString().isEmpty()) {
             System.out.println("Id-ul clientului nu este valid!");
         } else {
             try {
                 List<AbstractModel> contracts = Contract.readContracteByIdClient(id);
                 int i = 1;
-
                 for (AbstractModel abstractModel : contracts) {
                     Contract contract = (Contract) abstractModel;
                     List<AbstractModel> evenimente = new ArrayList<>();
@@ -408,6 +408,7 @@ public class Application {
                         Eveniment eveniment = (Eveniment) abstractModelEveniment;
                         AbstractModel abstractModelLocatie = Locatie.readDenumireLocatie(eveniment.getIdLocatie());
                         Locatie locatie = (Locatie) abstractModelLocatie;
+                        evenimenteMap.put(i, eveniment);
                         System.out.println(i++ + ". " + eveniment.getTipEveniment() + ": " + locatie.getDenumire() + " | " + eveniment.getDataEveniment() + " | " + eveniment.getNrParticipanti() + " participanti");
                     }
                 }
@@ -415,10 +416,89 @@ public class Application {
                 throw new RuntimeException(e);
             }
         }
+        return evenimenteMap;
     }
 
     private static void handlePrintInvitations(ClientController clientController) {
-        // TODO
+        UUID idClient = clientController.getIdClient();
+        Map<Integer, Eveniment> evenimente = handleViewEvents(idClient);
+        System.out.println("Alegeți evenimentul: ");
+        int option;
+        do {
+            try {
+                option = Integer.parseInt(SCANNER.nextLine());
+                if (option < 1 || option >= evenimente.size() + 1) {
+                    System.out.println("Opțiunea nu există!");
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Opțiunea nu este un număr!");
+                continue;
+            }
+            break;
+        } while (true);
+        Eveniment eveniment = evenimente.get(option);
+        if (eveniment == null) {
+            System.out.println("Nu există acest eveniment!");
+        } else {
+            TipEveniment tipEveniment = eveniment.getTipEveniment();
+            String tematica = eveniment.getTematica();
+            if (tematica == null) {
+                switch (tipEveniment) {
+                    case TipEveniment.BOTEZ:
+                        BotezFaraTematica botezFaraTematica = (BotezFaraTematica) eveniment;
+                        botezFaraTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.CONCERT:
+                        ConcertFaraTematica concertFaraTematica = (ConcertFaraTematica) eveniment;
+                        concertFaraTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.EXPOZITIE:
+                        ExpozitieFaraTematica expozitieFaraTematica = (ExpozitieFaraTematica) eveniment;
+                        expozitieFaraTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.FESTIVAL:
+                        FestivalFaraTematica festivalFaraTematica = (FestivalFaraTematica) eveniment;
+                        festivalFaraTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.NUNTA:
+                        NuntaFaraTematica nuntaFaraTematica = (NuntaFaraTematica) eveniment;
+                        nuntaFaraTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.PETRECERE_ABSOLVIRE:
+                        PetrecereAbsolvireFaraTematica petrecereAbsolvireFaraTematica = (PetrecereAbsolvireFaraTematica) eveniment;
+                        petrecereAbsolvireFaraTematica.tiparesteInvitatie();
+                        break;
+                }
+            } else {
+                switch (tipEveniment) {
+                    case TipEveniment.BOTEZ:
+                        BotezCuTematica botezCuTematica = (BotezCuTematica) eveniment;
+                        botezCuTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.CONCERT:
+                        ConcertCuTematica concertCuTematica = (ConcertCuTematica) eveniment;
+                        concertCuTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.EXPOZITIE:
+                        ExpozitieCuTematica expozitieCuTematica = (ExpozitieCuTematica) eveniment;
+                        expozitieCuTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.FESTIVAL:
+                        FestivalCuTematica festivalCuTematica = (FestivalCuTematica) eveniment;
+                        festivalCuTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.NUNTA:
+                        NuntaCuTematica nuntaCuTematica = (NuntaCuTematica) eveniment;
+                        nuntaCuTematica.tiparesteInvitatie();
+                        break;
+                    case TipEveniment.PETRECERE_ABSOLVIRE:
+                        PetrecereAbsolvireCuTematica petrecereAbsolvireCuTematica = (PetrecereAbsolvireCuTematica) eveniment;
+                        petrecereAbsolvireCuTematica.tiparesteInvitatie();
+                        break;
+                }
+            }
+        }
     }
 
     private static void handleChangePassword(Client client) {
