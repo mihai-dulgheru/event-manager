@@ -89,7 +89,6 @@ public class Application {
             }
 
 
-            // TODO: adaugă metoda de creare cont
             // TODO: implementează metodele de afișare modele din MVC
             // TODO: fa meniul recursiv + adăugare opțiune de ieșire din meniu
             // TODO: să poată accepta doar y/n
