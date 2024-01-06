@@ -275,14 +275,7 @@ public class Application {
     }
 
     private static Eveniment creareEveniment(TipEveniment tipEveniment, CategorieEveniment categorieEveniment, UUID idContract, UUID idLocatie, String dataEveniment, Integer nrParticipanti, String tematica) {
-        EvenimentFactory factory = switch (tipEveniment) {
-            case TipEveniment.BOTEZ -> new BotezFactory();
-            case TipEveniment.CONCERT -> new ConcertFactory();
-            case TipEveniment.EXPOZITIE -> new ExpozitieFactory();
-            case TipEveniment.FESTIVAL -> new FestivalFactory();
-            case TipEveniment.NUNTA -> new NuntaFactory();
-            case TipEveniment.PETRECERE_ABSOLVIRE -> new PetrecereAbsolvireFactory();
-        };
+        EvenimentFactory factory = createEventFactory(tipEveniment);
         return switch (categorieEveniment) {
             case CategorieEveniment.CU_TEMATICA ->
                     factory.createEvenimentCuTematica(idContract, idLocatie, dataEveniment, nrParticipanti, tematica);
@@ -419,86 +412,62 @@ public class Application {
         return evenimenteMap;
     }
 
-    private static void handlePrintInvitations(ClientController clientController) {
+    public static void handlePrintInvitations(ClientController clientController) {
         UUID idClient = clientController.getIdClient();
         Map<Integer, Eveniment> evenimente = handleViewEvents(idClient);
+
+        if (evenimente.isEmpty()) {
+            System.out.println("Nu există evenimente disponibile pentru afișare.");
+            return;
+        }
+
         System.out.println("Alegeți evenimentul: ");
+        int option = promptForOption(evenimente.size());
+
+        Eveniment eveniment = evenimente.get(option);
+        if (eveniment == null) {
+            System.out.println("Nu există acest eveniment!");
+            return;
+        }
+
+        TipEveniment tipEveniment = eveniment.getTipEveniment();
+        String tematica = eveniment.getTematica();
+        EvenimentFactory factory = createEventFactory(tipEveniment);
+        if (tematica == null) {
+            EvenimentFaraTematica evenimentFaraTematica = factory.createEvenimentFaraTematica(eveniment.getIdContract(), eveniment.getIdLocatie(), eveniment.getDataEveniment(), eveniment.getNrParticipanti());
+            evenimentFaraTematica.tiparesteInvitatie();
+        } else {
+            EvenimentCuTematica evenimentCuTematica = factory.createEvenimentCuTematica(eveniment.getIdContract(), eveniment.getIdLocatie(), eveniment.getDataEveniment(), eveniment.getNrParticipanti(), tematica);
+            evenimentCuTematica.tiparesteInvitatie();
+        }
+    }
+
+    private static int promptForOption(int maxOption) {
         int option;
         do {
             try {
                 option = Integer.parseInt(SCANNER.nextLine());
-                if (option < 1 || option >= evenimente.size() + 1) {
+                if (option < 1 || option > maxOption) {
                     System.out.println("Opțiunea nu există!");
                     continue;
                 }
+                break;
             } catch (NumberFormatException e) {
                 System.out.println("Opțiunea nu este un număr!");
-                continue;
             }
-            break;
         } while (true);
-        Eveniment eveniment = evenimente.get(option);
-        if (eveniment == null) {
-            System.out.println("Nu există acest eveniment!");
-        } else {
-            TipEveniment tipEveniment = eveniment.getTipEveniment();
-            String tematica = eveniment.getTematica();
-            if (tematica == null) {
-                switch (tipEveniment) {
-                    case TipEveniment.BOTEZ:
-                        BotezFaraTematica botezFaraTematica = (BotezFaraTematica) eveniment;
-                        botezFaraTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.CONCERT:
-                        ConcertFaraTematica concertFaraTematica = (ConcertFaraTematica) eveniment;
-                        concertFaraTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.EXPOZITIE:
-                        ExpozitieFaraTematica expozitieFaraTematica = (ExpozitieFaraTematica) eveniment;
-                        expozitieFaraTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.FESTIVAL:
-                        FestivalFaraTematica festivalFaraTematica = (FestivalFaraTematica) eveniment;
-                        festivalFaraTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.NUNTA:
-                        NuntaFaraTematica nuntaFaraTematica = (NuntaFaraTematica) eveniment;
-                        nuntaFaraTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.PETRECERE_ABSOLVIRE:
-                        PetrecereAbsolvireFaraTematica petrecereAbsolvireFaraTematica = (PetrecereAbsolvireFaraTematica) eveniment;
-                        petrecereAbsolvireFaraTematica.tiparesteInvitatie();
-                        break;
-                }
-            } else {
-                switch (tipEveniment) {
-                    case TipEveniment.BOTEZ:
-                        BotezCuTematica botezCuTematica = (BotezCuTematica) eveniment;
-                        botezCuTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.CONCERT:
-                        ConcertCuTematica concertCuTematica = (ConcertCuTematica) eveniment;
-                        concertCuTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.EXPOZITIE:
-                        ExpozitieCuTematica expozitieCuTematica = (ExpozitieCuTematica) eveniment;
-                        expozitieCuTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.FESTIVAL:
-                        FestivalCuTematica festivalCuTematica = (FestivalCuTematica) eveniment;
-                        festivalCuTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.NUNTA:
-                        NuntaCuTematica nuntaCuTematica = (NuntaCuTematica) eveniment;
-                        nuntaCuTematica.tiparesteInvitatie();
-                        break;
-                    case TipEveniment.PETRECERE_ABSOLVIRE:
-                        PetrecereAbsolvireCuTematica petrecereAbsolvireCuTematica = (PetrecereAbsolvireCuTematica) eveniment;
-                        petrecereAbsolvireCuTematica.tiparesteInvitatie();
-                        break;
-                }
-            }
-        }
+        return option;
+    }
+
+    private static EvenimentFactory createEventFactory(TipEveniment tipEveniment) {
+        return switch (tipEveniment) {
+            case TipEveniment.BOTEZ -> new BotezFactory();
+            case TipEveniment.CONCERT -> new ConcertFactory();
+            case TipEveniment.EXPOZITIE -> new ExpozitieFactory();
+            case TipEveniment.FESTIVAL -> new FestivalFactory();
+            case TipEveniment.NUNTA -> new NuntaFactory();
+            case TipEveniment.PETRECERE_ABSOLVIRE -> new PetrecereAbsolvireFactory();
+        };
     }
 
     private static void handleChangePassword(Client client) {
