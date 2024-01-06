@@ -84,7 +84,7 @@ public class Application {
                 }
                 if (optiuneUserAutentificat == 3) {
                     assert client != null;
-                    schimbareParola(client);
+                    schimbareParola(client.getId());
                 }
             }
 
