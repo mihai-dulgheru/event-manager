@@ -29,7 +29,6 @@ public class Application {
 
     public static void start() {
         // TODO: implementează metodele de afișare modele din MVC
-        // TODO: fa meniul recursiv + adăugare opțiune de ieșire din meniu
 
         try {
             Database.connect();

@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Eveniment extends AbstractModel {
     static {
         try {
+            // TODO: adaugă tematică
             Database.statement.executeUpdate("CREATE TABLE IF NOT EXISTS evenimente" +
                     "(" +
                     "    id_eveniment    VARCHAR(36) PRIMARY KEY," +
