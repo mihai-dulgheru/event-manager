@@ -229,7 +229,20 @@ public final class Database {
                 new Serviciu("Servicii de Dans și Coregrafie", 7000f, 6f, "Organizarea de lecții de dans și coregrafie pentru a aduce energie pe ringul de dans.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),
                 new Serviciu("Servicii de Proiecții Video și Montaj Foto", 4000f, null, "Prezentarea de montaje video și fotografii pentru a reflecta momentele memorabile din perioada de școală.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),
                 new Serviciu("Spectacol de Artificii sau Lumină și Sunet", 3500f, 2f, "Organizarea unui spectacol impresionant de artificii sau un show de lumină și sunet pentru a marca absolvirea.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),
-                new Serviciu("Cadouri și Amintiri pentru Absolvenți", 3000f, 3f, "Oferirea de cadouri și suveniruri personalizate pentru absolvenți.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),};
+                new Serviciu("Cadouri și Amintiri pentru Absolvenți", 3000f, 3f, "Oferirea de cadouri și suveniruri personalizate pentru absolvenți.", TipEveniment.PETRECERE_ABSOLVIRE.toString()),
+                new Serviciu("Scenă Principală", 15000f, null, "O scenă impresionantă pentru spectacolele principale ale artiștilor.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Zonă de Food Truck-uri", 8000f, 5f, "O varietate de opțiuni culinare prin food truck-uri pentru toate gusturile.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Activități pentru Copii", 5000f, 2f, "Zone speciale cu jocuri și activități pentru cei mici.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Standuri de Vânzare a Artiștilor", 6000f, 4f, "Spații pentru artiști locali să își expună și să vândă creațiile.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Zone de Relaxare", 3000f, 3f, "Locuri amenajate pentru relaxare și socializare.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Baruri și Băuturi Exotice", 7000f, null, "Băuturi inedite și baruri tematice pentru o experiență de neuitat.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Spectacole de Artă Stradală", 4000f, 6f, "Artiști stradali care susțin spectacole captivante pe tot parcursul festivalului.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Zone de Camping", 4500f, 8f, "Facilități pentru camping pentru participanții care doresc să rămână peste noapte.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Activități Sportive", 3500f, 2f, "Zone pentru activități sportive și competiții distractive.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Proiecții Video și Mapping", 6000f, null, "Proiecții video impresionante și mapping pentru o atmosferă vizuală captivantă.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Servicii de Siguranță", 5000f, null, "Personal de securitate pentru asigurarea ordinii și siguranței participanților.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Promovare și Publicitate", 3000f, 7f, "Campanii de marketing pentru a atrage un număr cât mai mare de participanți.", TipEveniment.FESTIVAL.toString()),
+                new Serviciu("Servicii de Toalete Mobile", 2000f, null, "Toalete mobile pentru confortul participanților.", TipEveniment.FESTIVAL.toString())};
     }
 
     private static Pachet[] getPackets(Eveniment[] events, Serviciu[] servicii) {
